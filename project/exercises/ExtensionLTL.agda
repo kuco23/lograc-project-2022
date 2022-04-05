@@ -1,6 +1,7 @@
-open import TruncationLogic
+import exercises.TruncationLogic
+open module TL = exercises.TruncationLogic AtomicFormula
 
-module ExtensionLTL (AtomicFormula : Set) (ts : truncation-structure) where
+module exercises.ExtensionLTL (AtomicFormula : Set) (ts : truncation-structure) where
 
 {-
 Prop logic φ,ψ ∷= P | ⊤ | ⊥ | φ ∧ ψ | φ ∨ ψ | φ ⇒ ψ 
@@ -105,3 +106,4 @@ module Semantics where -- TODO: Separate files for these different modules!
 
        {- Po tem, bi bil naslednji korak
        3. Validate some Axioms/Tautologies -}
+ 
