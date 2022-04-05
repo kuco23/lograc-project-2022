@@ -1,4 +1,4 @@
-module exercises.TruncationLogic where
+module TruncationLogic where
   open import Axiom.Extensionality.Propositional using (Extensionality)
 
   postulate fun-ext : ∀ {a b} → Extensionality a b
