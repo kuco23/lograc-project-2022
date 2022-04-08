@@ -1,11 +1,11 @@
 module HProp where
 
-open import Level
+open import Level hiding (suc)
 
 open import Data.Product hiding (∃)
 open import Data.Sum
 open import Data.Empty
-open import Data.Unit
+open import Data.Unit hiding (_≤_)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -91,3 +91,14 @@ _⇒ʰ_ : HProp → HProp → HProp
 
 ∀ʰ : (A : Set) → (A → HProp) → HProp
 ∀ʰ A ϕ = ⟨ (∀ x → proof (ϕ x)) , (λ f g → fun-ext (λ x → is-prop (ϕ x) (f x) (g x))) ⟩
+
+open import Data.Nat --using (ℕ ; _≤_ ; suc)
+open import Relation.Binary.PropositionalEquality
+
+_≤ʰ_ : ℕ → ℕ → HProp
+proof (n ≤ʰ m) = n ≤ m
+is-prop (zero ≤ʰ m) z≤n z≤n = refl
+is-prop (suc n ≤ʰ suc m) (s≤s p) (s≤s q) = cong s≤s (is-prop (n ≤ʰ m) p q)
+
+_<ʰ_ : ℕ → ℕ → HProp
+n <ʰ m = (suc n) ≤ʰ m

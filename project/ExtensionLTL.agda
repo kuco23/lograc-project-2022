@@ -1,6 +1,4 @@
-open import TruncationLogic using (truncation-structure)
 
-module ExtensionLTL (AtomicFormula : Set) (ts : truncation-structure) where
 
 {-
 Prop logic φ,ψ ∷= P | ⊤ | ⊥ | φ ∧ ψ | φ ∨ ψ | φ ⇒ ψ 
@@ -44,7 +42,7 @@ Use HoTT to get the semantics and ideas for how to do any of this
 CURRENT PROJECT: MAKE IT WORK LIKE SEMANTICS.AGDA
 -}
 
-module Semantics where -- TODO: Separate files for these different modules!
+module Semantics (AtomicFormuila : Set) where -- TODO: Separate files for these different modules!
 
       open import Level
 
@@ -63,7 +61,6 @@ module Semantics where -- TODO: Separate files for these different modules!
       open import HProp
       open import Logic AtomicFormula
        
-      open truncation-structure ts public
 
       ℙ = HProp
       Env = AtomicFormula → ℙ
