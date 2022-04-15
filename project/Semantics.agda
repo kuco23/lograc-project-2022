@@ -67,11 +67,6 @@ module Semantics (AtomicFormula : Set) (η : AtomicFormula → HProp) where -- T
       ℙ = HProp
       Env = AtomicFormula → ℙ
 
-      
-
-       {- Tu bi se naj to naredilo kot v semantics.agda iz Ex5
-       Jaz, tega ne znam. Bom se moral vrniti sem. Ali pa
-       ti narediš! -}
       ⟦_⟧ : Formula → ℕ  → ℙ
       ⟦ ` P ⟧ n = η P
       ⟦ ⊤ ⟧ n = ⊤ʰ
@@ -82,6 +77,3 @@ module Semantics (AtomicFormula : Set) (η : AtomicFormula → HProp) where -- T
       ⟦ G P ⟧ n = ∀ʰ ℕ ((λ m → (n ≤ʰ m) ⇒ʰ ⟦ P ⟧ m))
       ⟦ P U Q ⟧ n = ∃ʰ ℕ  (λ n' → ((n ≤ʰ n') ⇒ʰ ((⟦ Q ⟧) n' ∧ʰ (∀ʰ ℕ (λ m → (((n ≤ʰ m) ∧ʰ (m <ʰ n')) ⇒ʰ ⟦ P ⟧ m))))))
       ⟦ X P ⟧ n = ⟦ P ⟧ (suc n)
-       {- Po tem, bi bil naslednji korak
-       3. Validate some Axioms/Tautologies -}
-  

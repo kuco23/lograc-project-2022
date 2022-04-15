@@ -17,6 +17,12 @@ module Logic (AtomicFormula : Set) where
                 X_ : Formula → Formula
 --              _⊃_ : Formula → Formula → Formula -- Unnecessary due to it being the same as ⇒
 
+       ¬_ : Formula → Formula              -- unicode \neg
+       ¬ φ = φ ⇒ ⊥
+       
+       _⇔_ : Formula → Formula → Formula    -- unicode \<=>
+       φ ⇔ ψ = (φ ⇒ ψ) ∧ (ψ ⇒ φ)
+
        infixr 6 _∧_
        infixr 5 _∨_
        infixr 4 _⇒_
@@ -24,11 +30,7 @@ module Logic (AtomicFormula : Set) where
        infixr 20 _U_
        infixr 20 X_
 
-       ¬_ : Formula → Formula              -- unicode \neg
-       ¬ φ = φ ⇒ ⊥
-
-       _⇔_ : Formula → Formula → Formula    -- unicode \<=>
-       φ ⇔ ψ = (φ ⇒ ψ) ∧ (ψ ⇒ φ)
-
        infix 7 ¬_
        infix 3 _⇔_
+
+      
