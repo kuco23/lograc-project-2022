@@ -15,7 +15,7 @@ module Logic (AtomicFormula : Set) where
                 G_ : Formula → Formula
                 _U_ : Formula → Formula → Formula
                 X_ : Formula → Formula
-  --              _⊃_ : Formula → Formula → Formula -- Unnecessary??? Book says it functions like an implication
+--              _⊃_ : Formula → Formula → Formula -- Unnecessary due to it being the same as ⇒
 
        infixr 6 _∧_
        infixr 5 _∨_
@@ -23,3 +23,12 @@ module Logic (AtomicFormula : Set) where
        infixr 20 G_
        infixr 20 _U_
        infixr 20 X_
+
+       ¬_ : Formula → Formula              -- unicode \neg
+       ¬ φ = φ ⇒ ⊥
+
+       _⇔_ : Formula → Formula → Formula    -- unicode \<=>
+       φ ⇔ ψ = (φ ⇒ ψ) ∧ (ψ ⇒ φ)
+
+       infix 7 ¬_
+       infix 3 _⇔_
