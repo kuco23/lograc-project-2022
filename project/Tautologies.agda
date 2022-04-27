@@ -2,9 +2,8 @@ open import HProp
 
 module Tautologies (AtomicFormula : Set) (η : AtomicFormula → HProp)  where
 
-open import Data.Nat
+open import Data.Nat using (ℕ)
 open import Data.Product
-open import Data.Nat.Properties
 
 open import Logic AtomicFormula
 open import Semantics AtomicFormula η
