@@ -7,7 +7,8 @@ open import Data.Sum
 open import Data.Empty
 open import Data.Unit hiding (_≤_)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import Axiom.Extensionality.Propositional using (Extensionality)
 postulate fun-ext : ∀ {a b} → Extensionality a b
@@ -92,8 +93,7 @@ _⇒ʰ_ : HProp → HProp → HProp
 ∀ʰ : (A : Set) → (A → HProp) → HProp
 ∀ʰ A ϕ = ⟨ (∀ x → proof (ϕ x)) , (λ f g → fun-ext (λ x → is-prop (ϕ x) (f x) (g x))) ⟩
 
-open import Data.Nat --using (ℕ ; _≤_ ; suc)
-open import Relation.Binary.PropositionalEquality
+-- natural number inequality
 
 _≤ʰ_ : ℕ → ℕ → HProp
 proof (n ≤ʰ m) = n ≤ m

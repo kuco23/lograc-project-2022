@@ -16,10 +16,8 @@ open import Data.Nat
 
 Hypotheses = List (Formula)
 
-
-
 Axiom8 : (A B : Formula) (n : ℕ) → proof (⟦ (A U B) ⇒ (G B) ⟧ n)
-Axiom8 A B n p m q = {!!}
+Axiom8 A B n = {!   !}
 -- Need to find a inhabitant of proof() (likely to be a lambda abstraction because of implication)
 
 Axiom2 : (A B : Formula) (n : ℕ) → proof(⟦ G (A ⇒ B) ⇒ (G A ⇒ G B)⟧ n)
