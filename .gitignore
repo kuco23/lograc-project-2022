@@ -4,5 +4,8 @@
 # Agda specific
 *.agdai
 *.agda~
+*.agda#
+*.#*.agda
+
 MAlonzo/**
 _build/
