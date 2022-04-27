@@ -5,7 +5,6 @@ module Tautologies (AtomicFormula : Set) (η : AtomicFormula → HProp)  where
 open import Data.Nat
 open import Data.Product
 open import Data.Nat.Properties
-open import Data.Empty
 
 open import Logic AtomicFormula
 open import Semantics AtomicFormula η

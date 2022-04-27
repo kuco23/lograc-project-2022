@@ -4,17 +4,7 @@ module Semantics (AtomicFormula : Set) (η : AtomicFormula → HProp) where
       
       open import Logic AtomicFormula
 
-      open import Data.Product hiding (∃)
-      open import Data.Sum
-      open import Data.Unit renaming (⊤ to One)
-      open import Data.Empty renaming (⊥ to Zero)
-
       open import Data.Nat using (ℕ ; suc)
-      open import Data.Bool renaming (_∧_ to _and_; _∨_ to _or_)
-      open import Data.Bool.Properties
-
-      open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-
 
       ℙ = HProp
       Env = AtomicFormula → ℙ
