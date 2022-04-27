@@ -1,9 +1,6 @@
 module Logic (AtomicFormula : Set) where
-       open import Data.List  using (List; []; _∷_; [_]; _++_) public
 
-       {-
-          Formulae of propositional logic.
-       -}
+       -- open import Data.List  using (List; []; _∷_; [_]; _++_) public
 
        data Formula : Set where
                 `_  : AtomicFormula → Formula           -- atomic formula
@@ -12,10 +9,9 @@ module Logic (AtomicFormula : Set) where
                 _∧_ : Formula → Formula → Formula       -- conjunction (unicode \wedge)
                 _∨_ : Formula → Formula → Formula       -- disjunction (unicode \vee)
                 _⇒_ : Formula → Formula → Formula       -- implication (unicode \=>)
-                G_ : Formula → Formula
-                _U_ : Formula → Formula → Formula
-                X_ : Formula → Formula
---              _⊃_ : Formula → Formula → Formula -- Unnecessary due to it being the same as ⇒
+                G_ : Formula → Formula                  -- G A n ⇔ A m for all m ≥ n 
+                _U_ : Formula → Formula → Formula       -- A U B n ⇔ exists m ≥= n. A holds from n to (m - 1)
+                X_ : Formula → Formula                  -- X A n ⇔ A (n + 1)
 
        ¬_ : Formula → Formula              -- unicode \neg
        ¬ φ = φ ⇒ ⊥
@@ -24,7 +20,7 @@ module Logic (AtomicFormula : Set) where
        φ ⇔ ψ = (φ ⇒ ψ) ∧ (ψ ⇒ φ)
 
        F_ : Formula → Formula
-       F A = ¬ G (¬ A)   -- at some point in the future it will be true, for at least that one point
+       F A = ¬ G (¬ A)   -- F A ⇔ A is true for at least one point in the future
 
        infixr 6 _∧_
        infixr 5 _∨_
@@ -36,5 +32,3 @@ module Logic (AtomicFormula : Set) where
 
        infix 7 ¬_
        infix 3 _⇔_
-
-      
