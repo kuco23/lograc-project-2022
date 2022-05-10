@@ -19,7 +19,7 @@ open module ND = NaturalDeduction AtomicFormula
 
 obvious : {n : ℕ} {(δ at n) : TimeFormula} {Δ : Hypotheses} → (δ at n) ∈ Δ → proof(⟦ Δ ⟧ʰ) → proof(⟦ δ ⟧ n)
 obvious ∈-here (p , q) = p
-obvious ∈-there (p , q) = {! obvious _   !}
+obvious ∈-there (p , q) = {!  !}
 
 Soundness : {Δ : Hypotheses} {δ : Formula} {n : ℕ} → Δ ⊢ δ AT n → proof(⟦ Δ ⟧ʰ) → proof(⟦ δ ⟧ n)
 Soundness (weaken φ x) p = {!!}
