@@ -28,30 +28,3 @@ Axiom4 A B n p q = p q
 
 Axiom5 : (A : Formula) (n : ℕ) → proof(⟦ G A ⇒ A ∧ X G A ⟧ n)
 Axiom5 A n x = {!!}
-
--- Eksperimentacija s pojmi, da razumema
-
-c = ⟦ G (⊤ ⇒ ⊤) ⇒ (G ⊤ ⇒ G ⊤)⟧ 5
-d = ⟦ ⊤ ⇒ Formula.⊥ ⟧ 3
- 
--- Natural deduction but first a proof system without Until
-
-
-open import Data.List  using (List; []; _∷_; [_]; _++_) public
-Hypotheses = List (Formula)
-
-infixl 2 _⊢_
-
-data _⊢_ : (Δ : Hypotheses) → (φ : Formula) → Set where    -- unicode \vdash
-
-
-  weaken   : {Δ₁ Δ₂ : Hypotheses}
-                → (φ : Formula)
-                → {ψ : Formula}
-                → Δ₁ ++ Δ₂ ⊢ ψ
-                -----------------------
-                → Δ₁ ++ [ φ ] ++ Δ₂ ⊢ ψ
-
-
---⊥E    :   {A : Formula} {n : ℕ} →
---        →  

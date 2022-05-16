@@ -6,9 +6,6 @@ open import Logic AtomicFormula
 open import Data.Nat using (ℕ ; suc ; _≤_) -- Perhaps useful for time
 open import Data.Sum using (_⊎_) -- Maybe necessary for the future
 
-{-
-   Formulae of propositional logic.
--}
 
 record TimeFormula : Set where
   constructor _at_
@@ -26,11 +23,6 @@ data _∈_ {A : Set} : A → List A → Set where
   instance
     ∈-here  : {x : A} → {xs : List A} → x ∈ (x ∷ xs)
     ∈-there : {x y : A} {xs : List A} → {{x ∈ xs}} → x ∈ (y ∷ xs)
-
-{-
-   Below is a natural deduction style proof calculus for **intuitionistic**
-   propositional logic, formalised as an inductive relation.
--}
 
 infixl 1 _⊢_AT_
 data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where    -- unicode \vdash
