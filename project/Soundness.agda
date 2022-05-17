@@ -32,6 +32,19 @@ l++[]≡l (x ∷ L) = begin
     (x ∷ []) ++ L
   ∎
 
+a∈≡ : {A : Set} {a : A} {L₁ L₂ : List A} → L₁ ≡ L₂ → a ∈ L₁ → a ∈ L₂
+a∈≡ refl q = q
+
+a∈l++a++d : {A : Set} (a : A) (L₁ L₂ : List A) → a ∈ L₁ ++ (a ∷ []) ++ L₂
+a∈l++a++d a [] L₂ = ∈-here
+a∈l++a++d a (x ∷ L₁) L₂ = aux₂ aux₃ where
+  aux₁ : x ∷ (L₁ ++ (a ∷ []) ++ L₂) ≡ x ∷ L₁ ++ (a ∷ []) ++ L₂
+  aux₁ = ++-assoc (x ∷ []) L₁ ((a ∷ []) ++ L₂)
+  aux₂ : a ∈ x ∷ (L₁ ++ (a ∷ []) ++ L₂) → a ∈ (x ∷ L₁) ++ (a ∷ []) ++ L₂ 
+  aux₂ p = a∈≡ aux₁ p  
+  aux₃ : a ∈ x ∷ (L₁ ++ (a ∷ []) ++ L₂) 
+  aux₃ = ∈-there {{a∈l++a++d a L₁ L₂}}
+
 ⟦_⟧ʰ : (Δ : Hypotheses) → HProp
 ⟦ [] ⟧ʰ = ⊤ʰ
 ⟦ δ at n ∷ Δ ⟧ʰ = ⟦ δ ⟧ n ∧ʰ ⟦ Δ ⟧ʰ
@@ -39,12 +52,11 @@ l++[]≡l (x ∷ L) = begin
 {- ⊤≡⊤∧⊤ : (n : ℕ) → proof(⟦ ⊤ ⇔ ⊤ ∧ ⊤ ⟧ n)
 ⊤≡⊤∧⊤ = λ _ → (λ x → true , true) , (λ x → true) -}
 
+⟦⟧→⟦⟧ʰ : {n : ℕ} ((δ at n) : TimeFormula) → proof(⟦ δ ⟧ n) → proof(⟦ (δ at n) ∷ [] ⟧ʰ)
+⟦⟧→⟦⟧ʰ (δ at n) = λ z → z , true
+
 ≡to→ : {Δ₁ Δ₂ : Hypotheses} → Δ₁ ≡ Δ₂ → proof(⟦ Δ₁ ⟧ʰ) → proof(⟦ Δ₂ ⟧ʰ)
 ≡to→ refl = λ z → z
-
-extract : {n : ℕ} {(δ at n) : TimeFormula} {Δ : Hypotheses} → (δ at n) ∈ Δ → proof(⟦ Δ ⟧ʰ) → proof(⟦ δ ⟧ n)
-extract ∈-here (p , _) = p
-extract {n} (∈-there {{x}}) (_ , q) = extract {n} x q
 
 split : (Δ₁ Δ₂ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ⟧ʰ) → proof(⟦ Δ₁ ⟧ʰ ∧ʰ ⟦ Δ₂ ⟧ʰ)
 split [] Δ₂ p = true , p
@@ -54,6 +66,22 @@ split (x ∷ Δ₁) Δ₂ (p , q) with split Δ₁ Δ₂ q
 join : (Δ₁ Δ₂ : Hypotheses) → proof(⟦ Δ₁ ⟧ʰ ∧ʰ ⟦ Δ₂ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₂ ⟧ʰ)
 join [] Δ₂ (_ , q) = q
 join (x ∷ Δ₁) Δ₂ ((p , q) , r) = p , join Δ₁ Δ₂ (q , r)
+
+extract : {n : ℕ} {(δ at n) : TimeFormula} {Δ : Hypotheses} → (δ at n) ∈ Δ → proof(⟦ Δ ⟧ʰ) → proof(⟦ δ ⟧ n)
+extract ∈-here (p , _) = p
+extract {n} (∈-there {{x}}) (_ , q) = extract {n} x q
+
+remove : (δ : TimeFormula) (Δ : Hypotheses) → proof(⟦ Δ ++ (δ ∷ []) ⟧ʰ) → proof(⟦ Δ ⟧ʰ)
+remove δ Δ p = proj₁ (split Δ (δ ∷ []) p)
+
+add : (δ : TimeFormula) (Δ : Hypotheses) → δ ∈ Δ → proof(⟦ Δ ⟧ʰ) → proof(⟦ Δ ++ (δ ∷ []) ⟧ʰ)
+add (δ at n) Δ p q = aux₃ (aux₂ (aux₁ q)) where 
+  aux₁ : proof(⟦ Δ ⟧ʰ) → proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ ⟧ n)
+  aux₁ q = q , (extract {n} {δ at n} {Δ} p q)
+  aux₂ : proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ ⟧ n) → proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ at n ∷ [] ⟧ʰ)
+  aux₂ (q₁ , q₂) = q₁ , ⟦⟧→⟦⟧ʰ (δ at n) q₂
+  aux₃ : proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ at n ∷ [] ⟧ʰ) → proof(⟦ Δ ++ (δ at n) ∷ [] ⟧ʰ)
+  aux₃ q = join Δ (δ at n ∷ []) q
 
 shuffle : (Δ₁ Δ₂ Δ₃ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ⟧ʰ)
 shuffle Δ₁ Δ₂ [] = ≡to→ aux where
@@ -92,7 +120,27 @@ Soundness (weaken {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃ ((≡to
   aux₃ : proof(⟦ (Δ₁ ++ Δ₂) ++ (φ at n ∷ []) ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₂ ⟧ʰ)
   aux₃ p = proj₁ (split (Δ₁ ++ Δ₂) (φ at n ∷ []) p)
 
-Soundness (contract φ x) p = {!!} 
+Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) = {! Soundness x (aux₅ p) !} where
+  aux₀ : (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ≡ Δ₁ ++ φ at n ∷ [] ++ Δ₂
+  aux₀ = ++-assoc Δ₁ (φ at n ∷ []) Δ₂
+  aux₁ : proof(⟦ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ (φ at n) ∷ [] ⟧ʰ)
+  aux₁ p = ⟦⟧→⟦⟧ʰ (φ at n) (extract (a∈l++a++d (φ at n) Δ₁ Δ₂) p)
+  aux₃ : proof(⟦ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ (Δ₁ ++ φ at n ∷ [] ++ Δ₂) ++ (φ at n) ∷ [] ⟧ʰ)
+  aux₃ p = join (Δ₁ ++ φ at n ∷ [] ++ Δ₂) (φ at n ∷ []) (p , aux₁ p)
+
+
+  {- aux₀ : Δ₁ ++ φ at n ∷ [] ++ φ at n ∷ [] ++ Δ₂ ≡ (Δ₁ ++ φ at n ∷ []) ++ φ at n ∷ [] ++ Δ₂ 
+  aux₀ = sym (++-assoc Δ₁ (φ at n ∷ []) (φ at n ∷ [] ++ Δ₂))
+  aux₁ : proof(⟦ (Δ₁ ++ φ at n ∷ []) ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ++ (φ at n ∷ []) ⟧ʰ)
+  aux₁ p = shuffle (Δ₁ ++ φ at n ∷ []) (φ at n ∷ []) Δ₂ p
+  aux₂ : (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ++ φ at n ∷ [] ≡ ((Δ₁ ++ φ at n ∷ []) ++ Δ₂) ++ φ at n ∷ []
+  aux₂ = sym (++-assoc (Δ₁ ++ φ at n ∷ []) Δ₂ (φ at n ∷ []))
+  aux₃ : proof(⟦ ((Δ₁ ++ φ at n ∷ []) ++ Δ₂) ++ φ at n ∷ [] ⟧ʰ) → proof(⟦ (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ⟧ʰ)
+  aux₃ p = proj₁ (split ((Δ₁ ++ φ at n ∷ []) ++ Δ₂) (φ at n ∷ []) p)
+  aux₄ : (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ≡ Δ₁ ++ φ at n ∷ [] ++ Δ₂
+  aux₄ = ++-assoc Δ₁ (φ at n ∷ []) Δ₂
+  aux₅ : proof(⟦ Δ₁ ++ φ at n ∷ [] ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ)
+  aux₅ p = (≡to→ aux₄) (aux₃ ((≡to→ aux₂) (aux₁ ((≡to→ aux₀) p )))) -}
 
 Soundness (exchange φ₁ φ₂ x) p = {!!}
 
