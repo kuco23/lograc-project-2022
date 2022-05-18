@@ -79,7 +79,7 @@ add (δ at n) Δ p q = aux₃ (aux₂ (aux₁ q)) where
   aux₁ : proof(⟦ Δ ⟧ʰ) → proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ ⟧ n)
   aux₁ q = q , (extract {n} {δ at n} {Δ} p q)
   aux₂ : proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ ⟧ n) → proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ at n ∷ [] ⟧ʰ)
-  aux₂ (q₁ , q₂) = q₁ , ⟦⟧→⟦⟧ʰ (δ at n) q₂
+  aux₂ (q₁ , q₂) = q₁ , ⟦⟧→⟦⟧ʰ{n} (δ at n) q₂
   aux₃ : proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ at n ∷ [] ⟧ʰ) → proof(⟦ Δ ++ (δ at n) ∷ [] ⟧ʰ)
   aux₃ q = join Δ (δ at n ∷ []) q
 
@@ -124,7 +124,7 @@ Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) = {! Soundness x (aux₅ p) !
   aux₀ : (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ≡ Δ₁ ++ φ at n ∷ [] ++ Δ₂
   aux₀ = ++-assoc Δ₁ (φ at n ∷ []) Δ₂
   aux₁ : proof(⟦ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ (φ at n) ∷ [] ⟧ʰ)
-  aux₁ p = ⟦⟧→⟦⟧ʰ (φ at n) (extract (a∈l++a++d (φ at n) Δ₁ Δ₂) p)
+  aux₁ p = ⟦⟧→⟦⟧ʰ {n} (φ at n) (extract {n} (a∈l++a++d (φ at n) Δ₁ Δ₂) p)
   aux₃ : proof(⟦ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ (Δ₁ ++ φ at n ∷ [] ++ Δ₂) ++ (φ at n) ∷ [] ⟧ʰ)
   aux₃ p = join (Δ₁ ++ φ at n ∷ [] ++ Δ₂) (φ at n ∷ []) (p , aux₁ p)
 
