@@ -127,6 +127,10 @@ Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) = {! Soundness x (aux₅ p) !
   aux₁ p = ⟦⟧→⟦⟧ʰ (φ at n) (extract (a∈l++a++d (φ at n) Δ₁ Δ₂) p)
   aux₃ : proof(⟦ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ⟧ʰ) → proof(⟦ (Δ₁ ++ φ at n ∷ [] ++ Δ₂) ++ (φ at n) ∷ [] ⟧ʰ)
   aux₃ p = join (Δ₁ ++ φ at n ∷ [] ++ Δ₂) (φ at n ∷ []) (p , aux₁ p)
+  aux₄ : (Δ₁ ++ φ at n ∷ [] ++ Δ₂) ++ (φ at n ∷ []) ≡ Δ₁ ++ φ at n ∷ [] ++ Δ₂ ++ φ at n ∷ []
+  aux₄ = ++-assoc Δ₁ (φ at n ∷ [] ++ Δ₂) (φ at n ∷ [])
+  aux₅ : Δ₁ ++ φ at n ∷ [] ++ Δ₂ ++ φ at n ∷ [] ≡ (Δ₁ ++ φ at n ∷ []) ++ Δ₂ ++ φ at n ∷ []
+  aux₅ = {! sym(++-assoc ?)  !}
 
 
   {- aux₀ : Δ₁ ++ φ at n ∷ [] ++ φ at n ∷ [] ++ Δ₂ ≡ (Δ₁ ++ φ at n ∷ []) ++ φ at n ∷ [] ++ Δ₂ 
