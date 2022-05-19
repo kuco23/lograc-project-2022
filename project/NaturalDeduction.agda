@@ -34,7 +34,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → {ψ : Formula}
            → {n : ℕ}
            → Δ₁ ++ Δ₂ ⊢ ψ AT n
-           -----------------------
+           ---------------------------------
            → Δ₁ ++ [ φ at n ] ++ Δ₂ ⊢ ψ AT n
 
      contract : {Δ₁ Δ₂ : Hypotheses}
@@ -42,7 +42,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → {ψ : Formula}
            → {n : ℕ}
            → Δ₁ ++ [ φ at n ] ++ [ φ at n ] ++ Δ₂ ⊢ ψ AT n
-           --------------------------------
+           ---------------------------------
            → Δ₁ ++ [ φ at n ] ++ Δ₂ ⊢ ψ AT n
 
      exchange : {Δ₁ Δ₂ : Hypotheses}
@@ -50,7 +50,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → {ψ : Formula}
            → {n : ℕ}
            → Δ₁ ++ [ φ₁ at n ] ++ [ φ₂ at n ] ++ Δ₂ ⊢ ψ AT n
-           -----------------------------------------
+           --------------------------------------------------
            → Δ₁ ++ [ φ₂ at n ] ++ [ φ₁ at n ] ++ Δ₂ ⊢ ψ AT n
 
   -- hypotheses
@@ -59,24 +59,24 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → (φ : Formula)
            → (n : ℕ)
            → {{φ at n ∈ Δ}}
-           -----------------
+           -------------
            → Δ ⊢ φ AT n
 
-  -- Simple Temporal Rules
+  -- simple temporal rules
   -- https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf page 78
   
      ⊥-elim   : {Δ : Hypotheses}
           → {A : Formula}
           → {n m : ℕ}
           → Δ ++ [ (¬ A) at n ] ⊢ ⊥ AT m
-          --------------------
+          -------------
           → Δ ⊢ A AT n 
 
      ⇒-intro : {Δ : Hypotheses}
           → {A B : Formula}
           → {n : ℕ}
           → Δ ++ [ A at n ] ⊢ B AT n
-          ----------------------------
+          -------------------
           → Δ ⊢ (A ⇒ B) AT n
 
      ⇒-elim : {Δ : Hypotheses}
@@ -84,21 +84,21 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {n : ℕ}
           → Δ ⊢ (A ⇒ B) AT n
           → Δ ⊢ A AT n 
-          ----------------------------
+          -------------
           → Δ ⊢ B AT n
 
      X-intro : {Δ : Hypotheses}
           → {A : Formula}
           → {n : ℕ}
           → Δ ⊢ A AT (suc n)
-          -----------------------------
+          -----------------
           → Δ ⊢ (X A) AT n
 
      X-elim : {Δ : Hypotheses}
           → {A : Formula}
           → {n : ℕ}
           → Δ ⊢ X A AT n
-          ---------------------------
+          ------------------
           → Δ ⊢ A AT (suc n)
 
      {-ser◂ : {Δ : Hypotheses} -- ◂ is written like \t
@@ -114,7 +114,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {A : Formula}
           → {n : ℕ}
           → ((m : ℕ) → n ≤ m → Δ ⊢ A AT m)
-          ------------------------------
+          ---------------
           → Δ ⊢ G A AT n
 
      G-elim : {Δ : Hypotheses}
@@ -122,7 +122,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {n m : ℕ}
           → Δ ⊢ G A AT n
           → n ≤ m
-          ------------------------------
+          -------------
           → Δ ⊢ A AT m
 
   -- Probably dont need refl≤
