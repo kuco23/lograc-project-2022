@@ -21,9 +21,15 @@ open module L = Logic AtomicFormula
 open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
+lemma1 : (A : Formula) →
+         (n m : ℕ) →
+         (n ≤ m) →
+         [ G A at n ] ⊢ A AT m
+
+lemma1 A n m p = G-elim {![ G A at n ] ⊢ G A AT n!} p
 
 Ax1 : (A B : Formula) →
          (n : ℕ) →
          [] ⊢ (G (A ⇒ B) ⇒ (G A ⇒ G B)) AT n
-Ax1 A B n = ⇒-intro (⇒-intro (G-intro λ m x → ⇒-elim {!!} {!!} ))
+Ax1 A B n = ⇒-intro (⇒-intro (G-intro {!!} ))
 
