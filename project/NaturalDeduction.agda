@@ -1,6 +1,7 @@
 module NaturalDeduction (AtomicFormula : Set) where
 
-open import Data.List  using (List; []; _∷_; [_]; _++_) public
+import Data.List  using (List; []; _∷_; [_]; _++_)
+open Data.List
 open import Logic AtomicFormula
 
 open import Data.Nat using (ℕ ; suc ; _≤_) -- Perhaps useful for time
@@ -131,3 +132,59 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
 
   -- also not base≤
 
+ -- Classical Logic Things
+
+     ⊤-intro  : {Δ : Hypotheses}
+                   {n : ℕ}
+           ------------------
+           → Δ ⊢ ⊤ AT n
+
+
+     -- conjunction
+
+     ∧-intro  : {Δ : Hypotheses}
+              → {A B : Formula}
+              → {n : ℕ}
+              → Δ ⊢ A AT n
+              → Δ ⊢ B AT n
+              -------------------
+              → Δ ⊢ A ∧ B AT n
+
+     ∧-elim₁  : {Δ : Hypotheses}
+              → {A B : Formula}
+              → {n : ℕ}
+              → Δ ⊢ A ∧ B AT n
+              -------------------
+              → Δ ⊢ A AT n
+
+     ∧-elim₂  : {Δ : Hypotheses}
+              → {A B : Formula}
+              → {n : ℕ}
+              → Δ ⊢ A ∧ B AT n
+              -------------------
+              → Δ ⊢ B AT n
+
+     -- disjunction
+
+     ∨-intro₁ : {Δ : Hypotheses}
+              → {A B : Formula}
+              → {n : ℕ}
+              → Δ ⊢ A AT n
+              ------------------
+              → Δ ⊢ A ∨ B AT n
+
+     ∨-intro₂ : {Δ : Hypotheses}
+              → {A B : Formula}
+              → {n : ℕ}
+              → Δ ⊢ B AT n
+              -------------------
+              → Δ ⊢ A ∨ B AT n
+
+     ∨-elim   : {Δ : Hypotheses}
+              → {A₁ A₂ B : Formula}
+              → {n : ℕ}
+              → Δ ⊢ A₁ ∨ A₂ AT n
+              → Δ ++ [ A₁ at n ] ⊢ B AT n
+              → Δ ++ [ A₂ at n ] ⊢ B AT n
+              ---------------------
+              → Δ ⊢ B AT n
