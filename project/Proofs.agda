@@ -40,26 +40,21 @@ lemma2 A n = X-elim (hyp (X A) n {{∈-here}})
                 [ G (A ∧ B) at n ] ⊢ C AT n
 lemma2 A B C n x = {!!}-}
 
-Ax1 : (A B : Formula) →
-         (n : ℕ) →
-         [] ⊢ (G (A ⇒ B) ⇒ (G A ⇒ G B)) AT n
-Ax1 A B n = ⇒-intro (⇒-intro (G-intro {!!}))
+Ax1 : (A B : Formula) → (n : ℕ) → [] ⊢ (G (A ⇒ B) ⇒ (G A ⇒ G B)) AT n
+Ax1 A B n = ⇒-intro (⇒-intro (
+  G-intro (λ m p → ⇒-elim {A = A} 
+    (G-elim (hyp (G (A ⇒ B)) n {{∈-here}}) p)
+    (G-elim (hyp (G A) n {{∈-there {{∈-here}}}}) p))
+  ))
 
-Ax3 : (A : Formula)
-     → (n : ℕ)
-     → [] ⊢ (X (¬ A) ⇔ ¬ (X A)) AT n
+Ax3 : (A : Formula) → (n : ℕ) → [] ⊢ (X (¬ A) ⇔ ¬ (X A)) AT n
 Ax3 A n = ∧-intro left right where
   left : [] ⊢ X (¬ A) ⇒ ¬ X A AT n
-  left = ⇒-intro (⇒-intro {!!})
+  left = ⇒-intro ( {!X-intro ?!})
   right : [] ⊢ ¬ X A ⇒ X (¬ A) AT n
-  right = ⇒-intro (X-intro (⇒-intro {!!}))
+  right = ⇒-intro (X-intro (⇒-intro (exchange (¬ X A) A {!   !})))
 
 ⇒-contravariant : (A B C : Formula)
                 → (n : ℕ) 
                 → [] ⊢ (A ⇒ B) ⇒ (B ⇒ C) ⇒ A ⇒ C AT n
-⇒-contravariant A B C n = ⇒-intro  (⇒-intro (⇒-intro (⇒-elim (hyp (B ⇒ C) n {{∈-there {{∈-here}}}}) (⇒-elim (hyp (A ⇒ B) n {{∈-here}}) (hyp A n {{∈-there {{∈-there {{∈-here}}}}}})))))
-
-
-⇒-trans : (A B C : Formula)
-          → (n : ℕ)
-          → {!!}
+⇒-contravariant A B C n = ⇒-intro  (⇒-intro (⇒-intro (⇒-elim (hyp (B ⇒ C) n {{∈-there {{∈-here}}}}) (⇒-elim (hyp (A ⇒ B) n {{∈-here}}) (hyp A n {{∈-there {{∈-there {{∈-here}}}}}})))))  

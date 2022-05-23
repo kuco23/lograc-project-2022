@@ -43,18 +43,18 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → {ψ : Formula}
            → {n : ℕ}
            → Δ₁ ++ [ φ at n ] ++ [ φ at n ] ++ Δ₂ ⊢ ψ AT n
-           ---------------------------------
+           -----------------------------------------------
            → Δ₁ ++ [ φ at n ] ++ Δ₂ ⊢ ψ AT n
 
      exchange : {Δ₁ Δ₂ : Hypotheses}
            → (φ₁ φ₂ : Formula)
            → {ψ : Formula}
-           → {n : ℕ}
-           → Δ₁ ++ [ φ₁ at n ] ++ [ φ₂ at n ] ++ Δ₂ ⊢ ψ AT n
+           → {m n : ℕ}
+           → Δ₁ ++ [ φ₁ at m ] ++ [ φ₂ at n ] ++ Δ₂ ⊢ ψ AT n
            --------------------------------------------------
-           → Δ₁ ++ [ φ₂ at n ] ++ [ φ₁ at n ] ++ Δ₂ ⊢ ψ AT n
+           → Δ₁ ++ [ φ₂ at n ] ++ [ φ₁ at m ] ++ Δ₂ ⊢ ψ AT n
 
-  -- hypotheses
+     -- hypotheses
 
      hyp      : {Δ : Hypotheses}
            → (φ : Formula)
@@ -63,8 +63,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            -------------
            → Δ ⊢ φ AT n
 
-  -- simple temporal rules
-  -- https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf page 78
+     -- classical logic
   
      ⊥-elim   : {Δ : Hypotheses}
           → {A : Formula}
@@ -72,6 +71,56 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → Δ ++ [ (¬ A) at n ] ⊢ ⊥ AT m
           -------------
           → Δ ⊢ A AT n 
+     
+     ⊤-intro  : {Δ : Hypotheses}
+          → {n : ℕ}
+          -------------
+          → Δ ⊢ ⊤ AT n
+
+     ∧-intro  : {Δ : Hypotheses}
+          → {A B : Formula}
+          → {n : ℕ}
+          → Δ ⊢ A AT n
+          → Δ ⊢ B AT n
+          -----------------
+          → Δ ⊢ A ∧ B AT n
+
+     ∧-elim₁  : {Δ : Hypotheses}
+          → {A B : Formula}
+          → {n : ℕ}
+          → Δ ⊢ A ∧ B AT n
+          -------------
+          → Δ ⊢ A AT n
+
+     ∧-elim₂  : {Δ : Hypotheses}
+          → {A B : Formula}
+          → {n : ℕ}
+          → Δ ⊢ A ∧ B AT n
+          -------------
+          → Δ ⊢ B AT n
+
+     ∨-intro₁ : {Δ : Hypotheses}
+          → {A B : Formula}
+          → {n : ℕ}
+          → Δ ⊢ A AT n
+          -----------------
+          → Δ ⊢ A ∨ B AT n
+
+     ∨-intro₂ : {Δ : Hypotheses}
+          → {A B : Formula}
+          → {n : ℕ}
+          → Δ ⊢ B AT n
+          -----------------
+          → Δ ⊢ A ∨ B AT n
+
+     ∨-elim   : {Δ : Hypotheses}
+          → {A₁ A₂ B : Formula}
+          → {n : ℕ}
+          → Δ ⊢ A₁ ∨ A₂ AT n
+          → Δ ++ [ A₁ at n ] ⊢ B AT n
+          → Δ ++ [ A₂ at n ] ⊢ B AT n
+          -------------
+          → Δ ⊢ B AT n
 
      ⇒-intro : {Δ : Hypotheses}
           → {A B : Formula}
@@ -87,6 +136,9 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → Δ ⊢ A AT n 
           -------------
           → Δ ⊢ B AT n
+
+     -- simple temporal rules
+     -- https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf page 78
 
      X-intro : {Δ : Hypotheses}
           → {A : Formula}
@@ -125,66 +177,3 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → n ≤ m
           -------------
           → Δ ⊢ A AT m
-
-  -- Probably dont need refl≤
-
-  -- also not trans≤
-
-  -- also not base≤
-
- -- Classical Logic Things
-
-     ⊤-intro  : {Δ : Hypotheses}
-                   {n : ℕ}
-           ------------------
-           → Δ ⊢ ⊤ AT n
-
-
-     -- conjunction
-
-     ∧-intro  : {Δ : Hypotheses}
-              → {A B : Formula}
-              → {n : ℕ}
-              → Δ ⊢ A AT n
-              → Δ ⊢ B AT n
-              -------------------
-              → Δ ⊢ A ∧ B AT n
-
-     ∧-elim₁  : {Δ : Hypotheses}
-              → {A B : Formula}
-              → {n : ℕ}
-              → Δ ⊢ A ∧ B AT n
-              -------------------
-              → Δ ⊢ A AT n
-
-     ∧-elim₂  : {Δ : Hypotheses}
-              → {A B : Formula}
-              → {n : ℕ}
-              → Δ ⊢ A ∧ B AT n
-              -------------------
-              → Δ ⊢ B AT n
-
-     -- disjunction
-
-     ∨-intro₁ : {Δ : Hypotheses}
-              → {A B : Formula}
-              → {n : ℕ}
-              → Δ ⊢ A AT n
-              ------------------
-              → Δ ⊢ A ∨ B AT n
-
-     ∨-intro₂ : {Δ : Hypotheses}
-              → {A B : Formula}
-              → {n : ℕ}
-              → Δ ⊢ B AT n
-              -------------------
-              → Δ ⊢ A ∨ B AT n
-
-     ∨-elim   : {Δ : Hypotheses}
-              → {A₁ A₂ B : Formula}
-              → {n : ℕ}
-              → Δ ⊢ A₁ ∨ A₂ AT n
-              → Δ ++ [ A₁ at n ] ⊢ B AT n
-              → Δ ++ [ A₂ at n ] ⊢ B AT n
-              ---------------------
-              → Δ ⊢ B AT n
