@@ -22,7 +22,10 @@ open module L = Logic AtomicFormula
 open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
-postulate lem : {(φ at n): TimeFormula} → proof(⟦ ¬ (¬ φ) ⟧ n) → proof(⟦ φ ⟧ n)
+postulate lemʰ : {(φ at n): TimeFormula} → proof(⟦ ¬ (¬ φ) ⟧ n) → proof(⟦ φ ⟧ n)
+
+⊥⇒⋆ : {n : ℕ} {A : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ A ⟧ n)
+⊥⇒⋆ = λ x → _
 
 l++[]≡l : {A : Set} (L : List A) → L ++ [] ≡ L 
 l++[]≡l [] = refl
@@ -122,9 +125,9 @@ Soundness (exchange {Δ₁} {Δ₂} φ₁ φ₂ {ψ} {m} {n} x) p = Soundness x 
 
 Soundness (hyp {Δ} φ n {{φₙ∈Δ}}) = extract {n} {φ at n} {Δ} φₙ∈Δ
 
-Soundness (⊥-elim {Δ} {A} {n} {m} x) p = lem {A at n} (aux p) where 
-  aux : proof(⟦ Δ ⟧ʰ) → (proof(⟦ (¬ A) ⟧ n) → proof(⟦ ⊥ ⟧ m)) -- = proof(⟦ ¬ ¬ A ⟧ n)
-  aux p q = Soundness x (join Δ [ (¬ A) at n ] (p , ⟦x⟧→⟦[x]⟧ʰ ((¬ A) at n) q))
+Soundness (lem {Δ} {φ} {n} x) p = lemʰ {φ at n} (Soundness x p)
+
+Soundness (⊥-elim {Δ} {A} {n} {m} x) p = ⊥⇒⋆ {n} {A} (Soundness x p)
 
 Soundness (⇒-intro {Δ} {A} {B} {n} x) p = λ q → Soundness x (join Δ [ A at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (A at n) q))
 

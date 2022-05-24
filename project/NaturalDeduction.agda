@@ -64,11 +64,18 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → Δ ⊢ φ AT n
 
      -- classical logic
+
+     lem      : {Δ : Hypotheses} 
+          → {φ : Formula}
+          → {n : ℕ}
+          → Δ ⊢ φ AT n
+          ------------
+          → Δ ⊢ ¬ (¬ φ) AT n
   
      ⊥-elim   : {Δ : Hypotheses}
           → {A : Formula}
           → {n m : ℕ}
-          → Δ ++ [ (¬ A) at n ] ⊢ ⊥ AT m
+          → Δ ⊢ ⊥ AT m
           -------------
           → Δ ⊢ A AT n 
      

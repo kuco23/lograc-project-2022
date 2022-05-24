@@ -50,11 +50,9 @@ Ax1 A B n = ⇒-intro (⇒-intro (
 Ax3 : (A : Formula) → (n : ℕ) → [] ⊢ (X (¬ A) ⇔ ¬ (X A)) AT n
 Ax3 A n = ∧-intro left right where
   left : [] ⊢ X (¬ A) ⇒ ¬ X A AT n
-  left = ⇒-intro ( {!X-intro ?!})
+  left = ⇒-intro ( ⇒-intro ({!   !}))
   right : [] ⊢ ¬ X A ⇒ X (¬ A) AT n
-  right = ⇒-intro (X-intro (⇒-intro (exchange (¬ X A) A {!   !})))
-
-⇒-contravariant : (A B C : Formula)
-                → (n : ℕ) 
-                → [] ⊢ (A ⇒ B) ⇒ (B ⇒ C) ⇒ A ⇒ C AT n
-⇒-contravariant A B C n = ⇒-intro  (⇒-intro (⇒-intro (⇒-elim (hyp (B ⇒ C) n {{∈-there {{∈-here}}}}) (⇒-elim (hyp (A ⇒ B) n {{∈-here}}) (hyp A n {{∈-there {{∈-there {{∈-here}}}}}})))))  
+  right = ⇒-intro (X-intro (⇒-intro (⊥-elim {n = (suc n)} {m = n} (⇒-elim {A = ¬ X A} 
+      (lem (X-intro (hyp A (suc n) {{∈-there {{∈-here}}}}))) 
+      (hyp (¬ X A) n {{∈-here}}) 
+    ))))
