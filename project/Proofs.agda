@@ -55,7 +55,7 @@ Ax3 A n = ∧-intro left right where
       (X-elim (hyp (X A) n {{∈-there {{∈-here}}}}))
     )))
   right : [] ⊢ ¬ X A ⇒ X (¬ A) AT n
-  right = ⇒-intro (X-intro (⇒-intro (⊥-elim {n = (suc n)} {m = n} (⇒-elim {A = ¬ X A} 
-      (lem (X-intro (hyp A (suc n) {{∈-there {{∈-here}}}}))) 
+  right = ⇒-intro (X-intro (⇒-intro (⊥-elim {m = n} (⇒-elim {A = (X A)} 
       (hyp (¬ X A) n {{∈-here}}) 
+      (X-intro (hyp A (suc n) {{∈-there {{∈-here}}}}))
     ))))
