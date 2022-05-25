@@ -1,11 +1,10 @@
 module NaturalDeduction (AtomicFormula : Set) where
 
-import Data.List  using (List; []; _∷_; [_]; _++_)
-open Data.List
-open import Logic AtomicFormula
+open import Data.Nat using (ℕ ; suc ; _≤_)
+open import Data.List using (List ; [] ; _∷_ ; [_] ; _++_)
+open import Data.Sum using (_⊎_)
 
-open import Data.Nat using (ℕ ; suc ; _≤_) -- Perhaps useful for time
-open import Data.Sum using (_⊎_) -- Maybe necessary for the future
+open import Logic AtomicFormula
 
 
 record TimeFormula : Set where

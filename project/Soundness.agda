@@ -5,14 +5,13 @@ module Soundness (AtomicFormula : Set) (η : AtomicFormula → HProp) where
 open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
 
 open import Data.Nat using (ℕ ; suc ; _≤_)
+open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
+open import Data.List.Properties using (++-assoc)
 open import Data.Product using (_,_ ; proj₁ ; proj₂)
-open import Data.Sum
-open import Data.List
-open import Data.List.Properties
 
 import Relation.Binary.PropositionalEquality as Eq
-open Eq renaming ([_] to [|_|])
-open Eq.≡-Reasoning
+open Eq using (_≡_ ; refl ; cong ; sym)
+open Eq.≡-Reasoning 
 
 import Logic
 import Semantics
@@ -32,22 +31,22 @@ l++[]≡l [] = refl
 l++[]≡l (x ∷ L) = begin
     (x ∷ L) ++ []
   ≡⟨ cong (_++ []) refl ⟩
-    (x ∷ []) ++ L ++ [] 
-  ≡⟨ ++-assoc (x ∷ []) L [] ⟩
-    (x ∷ []) ++ (L ++ []) 
-  ≡⟨ cong ((x ∷ []) ++_) (l++[]≡l L) ⟩
-    (x ∷ []) ++ L
+    [ x ] ++ L ++ [] 
+  ≡⟨ ++-assoc [ x ] L [] ⟩
+    [ x ] ++ (L ++ []) 
+  ≡⟨ cong ([ x ] ++_) (l++[]≡l L) ⟩
+    [ x ] ++ L
   ∎
 
 l≡k∧a∈l⇒a∈k : {A : Set} {a : A} {L₁ L₂ : List A} → L₁ ≡ L₂ → a ∈ L₁ → a ∈ L₂
 l≡k∧a∈l⇒a∈k refl q = q
 
-a∈l++[a]++d : {A : Set} (a : A) (L₁ L₂ : List A) → a ∈ L₁ ++ (a ∷ []) ++ L₂
+a∈l++[a]++d : {A : Set} (a : A) (L₁ L₂ : List A) → a ∈ L₁ ++ [ a ] ++ L₂
 a∈l++[a]++d a [] L₂ = ∈-here
 a∈l++[a]++d a (x ∷ L₁) L₂ = l≡k∧a∈l⇒a∈k aux₁ aux₂ where
-  aux₁ : x ∷ (L₁ ++ (a ∷ []) ++ L₂) ≡ x ∷ L₁ ++ (a ∷ []) ++ L₂
-  aux₁ = ++-assoc (x ∷ []) L₁ ((a ∷ []) ++ L₂)
-  aux₂ : a ∈ x ∷ (L₁ ++ (a ∷ []) ++ L₂) 
+  aux₁ : x ∷ (L₁ ++ [ a ] ++ L₂) ≡ x ∷ L₁ ++ [ a ] ++ L₂
+  aux₁ = ++-assoc [ x ] L₁ ([ a ] ++ L₂)
+  aux₂ : a ∈ x ∷ (L₁ ++ [ a ] ++ L₂) 
   aux₂ = ∈-there {{a∈l++[a]++d a L₁ L₂}}
 
 ⟦_⟧ʰ : (Δ : Hypotheses) → HProp

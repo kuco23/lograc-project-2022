@@ -2,16 +2,8 @@ open import HProp
 
 module Proofs (AtomicFormula : Set) (η : AtomicFormula → HProp) where
 
-
-open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
-
 open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
-open import Data.Product using (_,_ ; proj₁ ; proj₂)
-open import Data.List
-
-import Relation.Binary.PropositionalEquality as Eq
-open Eq renaming ([_] to [|_|])
-open Eq.≡-Reasoning
+open import Data.List using ([] ; [_] ; _∷_ ; _++_)
 
 import Logic
 import Semantics
@@ -58,3 +50,6 @@ Ax5 A n = ⇒-intro (∧-intro
     (G-elim {n = n} {m = n} (hyp (G A) n {{∈-here}}) (n≤n n)) 
     (X-intro (G-intro λ m sn≤m → G-elim {n = n} {m = m} (hyp (G A) n {{∈-here}}) (sn≤m⇒n≤m sn≤m)))
   )
+
+Ax6 : (A : Formula) (n : ℕ) → [] ⊢ G (A ⇒ X A) ⇒ (A ⇒ G A) AT n 
+Ax6 A n = ⇒-intro (⇒-intro (G-intro λ m n≤m → {! ⇒-elim {A = A}  !}))
