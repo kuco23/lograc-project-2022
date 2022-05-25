@@ -50,7 +50,10 @@ Ax1 A B n = ⇒-intro (⇒-intro (
 Ax3 : (A : Formula) → (n : ℕ) → [] ⊢ (X (¬ A) ⇔ ¬ (X A)) AT n
 Ax3 A n = ∧-intro left right where
   left : [] ⊢ X (¬ A) ⇒ ¬ X A AT n
-  left = ⇒-intro ( ⇒-intro ({!   !}))
+  left = ⇒-intro ( ⇒-intro (⊥-elim {m = suc n} (⇒-elim {A = A} 
+      (X-elim (hyp (X (¬ A)) n {{∈-here}})) 
+      (X-elim (hyp (X A) n {{∈-there {{∈-here}}}}))
+    )))
   right : [] ⊢ ¬ X A ⇒ X (¬ A) AT n
   right = ⇒-intro (X-intro (⇒-intro (⊥-elim {n = (suc n)} {m = n} (⇒-elim {A = ¬ X A} 
       (lem (X-intro (hyp A (suc n) {{∈-there {{∈-here}}}}))) 

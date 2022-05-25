@@ -22,7 +22,7 @@ open module L = Logic AtomicFormula
 open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
-postulate lemʰ : {(φ at n): TimeFormula} → proof(⟦ ¬ (¬ φ) ⟧ n) → proof(⟦ φ ⟧ n)
+postulate lemʰ : {(φ at n): TimeFormula} → proof(⟦ φ ⟧ n) → proof(⟦ ¬ (¬ φ) ⟧ n)
 
 ⊥⇒⋆ : {n : ℕ} {A : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ A ⟧ n)
 ⊥⇒⋆ = λ x → _
