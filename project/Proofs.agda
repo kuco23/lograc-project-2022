@@ -51,5 +51,17 @@ Ax5 A n = ⇒-intro (∧-intro
     (X-intro (G-intro λ m sn≤m → G-elim {n = n} {m = m} (hyp (G A) n {{∈-here}}) (sn≤m⇒n≤m sn≤m)))
   )
 
+lemma : (A : Formula) (n m : ℕ) → n ≤ m → G (A ⇒ X A) at n ∷ [ A at n ] ⊢ A AT m 
+lemma A zero zero p = hyp A zero {{∈-there {{∈-here}}}}
+-- have to split cases n = (suc m) or n <= m
+lemma A n (suc m) p = {!  p !}
+
+{- lemma A .zero (suc m) z≤n = X-elim (⇒-elim {A = A} 
+    (G-elim {n = zero} (hyp (G (A ⇒ X A)) zero {{∈-here}}) z≤n) 
+    (lemma A zero m z≤n)
+  )
+lemma A (suc k) (suc m) (s≤s {k} {m} p) = {!  hyp A (suc m) {{∈-there {{∈-here}}}} !} -}
+
 Ax6 : (A : Formula) (n : ℕ) → [] ⊢ G (A ⇒ X A) ⇒ (A ⇒ G A) AT n 
-Ax6 A n = ⇒-intro (⇒-intro (G-intro λ m n≤m → {! ⇒-elim {A = A}  !}))
+Ax6 A n = ⇒-intro (⇒-intro (G-intro λ m n≤m → {! m  !}
+  ))  

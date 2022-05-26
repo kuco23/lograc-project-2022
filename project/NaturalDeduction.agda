@@ -59,7 +59,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → (φ : Formula)
            → (n : ℕ)
            → {{φ at n ∈ Δ}}
-           -------------
+           ----------------
            → Δ ⊢ φ AT n
 
      -- classical logic
@@ -68,7 +68,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {φ : Formula}
           → {n : ℕ}
           → Δ ⊢ φ AT n
-          ------------
+          -------------
           → Δ ⊢ ¬ (¬ φ) AT n
   
      ⊥-elim   : {Δ : Hypotheses}
@@ -95,14 +95,14 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {A B : Formula}
           → {n : ℕ}
           → Δ ⊢ A ∧ B AT n
-          -------------
+          ----------------
           → Δ ⊢ A AT n
 
      ∧-elim₂  : {Δ : Hypotheses}
           → {A B : Formula}
           → {n : ℕ}
           → Δ ⊢ A ∧ B AT n
-          -------------
+          ----------------
           → Δ ⊢ B AT n
 
      ∨-intro₁ : {Δ : Hypotheses}
@@ -125,14 +125,14 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → Δ ⊢ A₁ ∨ A₂ AT n
           → Δ ++ [ A₁ at n ] ⊢ B AT n
           → Δ ++ [ A₂ at n ] ⊢ B AT n
-          -------------
+          ---------------------------
           → Δ ⊢ B AT n
 
      ⇒-intro : {Δ : Hypotheses}
           → {A B : Formula}
           → {n : ℕ}
           → Δ ++ [ A at n ] ⊢ B AT n
-          -------------------
+          --------------------------
           → Δ ⊢ (A ⇒ B) AT n
 
      ⇒-elim : {Δ : Hypotheses}
@@ -150,7 +150,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {A : Formula}
           → {n : ℕ}
           → Δ ⊢ A AT (suc n)
-          -----------------
+          ------------------
           → Δ ⊢ (X A) AT n
 
      X-elim : {Δ : Hypotheses}
@@ -173,7 +173,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → {A : Formula}
           → {n : ℕ}
           → ((m : ℕ) → n ≤ m → Δ ⊢ A AT m)
-          ---------------
+          --------------------------------
           → Δ ⊢ G A AT n
 
      G-elim : {Δ : Hypotheses}
