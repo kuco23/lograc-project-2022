@@ -156,5 +156,5 @@ Soundness (∨-intro₂ x) p = ∣ inj₂ (Soundness x p) ∣
 Soundness {Δ} {δ} (∨-elim {Δ} {A₁} {A₂} {B} {n} x x₁ x₂) p with (Soundness x p)
 ... | q = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux q where
   aux : proof (⟦ A₁ ⟧ n) ⊎ proof (⟦ A₂ ⟧ n) → proof(⟦ δ ⟧ n)
-  aux (inj₁ x) = {!!}
-  aux (inj₂ y) = {!!}
+  aux (inj₁ p₁) = Soundness x₁ (join Δ [ A₁ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (A₁ at n) p₁))
+  aux (inj₂ p₂) = Soundness x₂ (join Δ [ A₂ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (A₂ at n) p₂))
