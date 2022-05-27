@@ -21,10 +21,12 @@ open module L = Logic AtomicFormula
 open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
+open import Data.Sum.Base
+
 postulate lemʰ : {(φ at n): TimeFormula} → proof(⟦ φ ⟧ n) → proof(⟦ ¬ (¬ φ) ⟧ n)
 
 ⊥⇒⋆ : {n : ℕ} {A : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ A ⟧ n)
-⊥⇒⋆ = λ x → _
+⊥⇒⋆ ()
 
 l++[]≡l : {A : Set} (L : List A) → L ++ [] ≡ L 
 l++[]≡l [] = refl
@@ -147,8 +149,12 @@ Soundness (∧-intro x₁ x₂) p = Soundness x₁ p , Soundness x₂ p
 Soundness (∧-elim₁ x) p = proj₁ (Soundness x p)
 Soundness (∧-elim₂ x) p = proj₂ (Soundness x p)
 
-Soundness (∨-intro₁ x) p with Soundness x p 
-... | q = {! q  !}
-Soundness (∨-intro₂ x) p = {!   !}
-Soundness (∨-elim x x₁ x₂) p = {!   !}
-  
+Soundness (∨-intro₁ x) p = ∣ inj₁ (Soundness x p) ∣
+
+Soundness (∨-intro₂ x) p = ∣ inj₂ (Soundness x p) ∣
+
+Soundness {Δ} {δ} (∨-elim {Δ} {A₁} {A₂} {B} {n} x x₁ x₂) p with (Soundness x p)
+... | q = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux q where
+  aux : proof (⟦ A₁ ⟧ n) ⊎ proof (⟦ A₂ ⟧ n) → proof(⟦ δ ⟧ n)
+  aux (inj₁ x) = {!!}
+  aux (inj₂ y) = {!!}
