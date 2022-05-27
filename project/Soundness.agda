@@ -23,46 +23,41 @@ open module ND = NaturalDeduction AtomicFormula
 
 open import Data.Sum.Base
 
-postulate lemʰ : {(φ at n): TimeFormula} → proof(⟦ φ ⟧ n) → proof(⟦ ¬ (¬ φ) ⟧ n)
-
 ⊥⇒⋆ : {n : ℕ} {A : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ A ⟧ n)
 ⊥⇒⋆ ()
 
-l++[]≡l : {A : Set} (L : List A) → L ++ [] ≡ L 
+l++[]≡l : {A : Set} (l : List A) → l ++ [] ≡ l 
 l++[]≡l [] = refl
-l++[]≡l (x ∷ L) = begin
-    (x ∷ L) ++ []
+l++[]≡l (x ∷ l) = begin
+    (x ∷ l) ++ []
   ≡⟨ cong (_++ []) refl ⟩
-    [ x ] ++ L ++ [] 
-  ≡⟨ ++-assoc [ x ] L [] ⟩
-    [ x ] ++ (L ++ []) 
-  ≡⟨ cong ([ x ] ++_) (l++[]≡l L) ⟩
-    [ x ] ++ L
+    [ x ] ++ l ++ [] 
+  ≡⟨ ++-assoc [ x ] l [] ⟩
+    [ x ] ++ (l ++ []) 
+  ≡⟨ cong ([ x ] ++_) (l++[]≡l l) ⟩
+    [ x ] ++ l
   ∎
 
-l≡k∧a∈l⇒a∈k : {A : Set} {a : A} {L₁ L₂ : List A} → L₁ ≡ L₂ → a ∈ L₁ → a ∈ L₂
-l≡k∧a∈l⇒a∈k refl q = q
+l₁≡l₂∧a∈l₁⇒a∈l₂ : {A : Set} {a : A} {l₁ l₂ : List A} → l₁ ≡ l₂ → a ∈ l₁ → a ∈ l₂
+l₁≡l₂∧a∈l₁⇒a∈l₂ refl q = q
 
-a∈l++[a]++d : {A : Set} (a : A) (L₁ L₂ : List A) → a ∈ L₁ ++ [ a ] ++ L₂
-a∈l++[a]++d a [] L₂ = ∈-here
-a∈l++[a]++d a (x ∷ L₁) L₂ = l≡k∧a∈l⇒a∈k aux₁ aux₂ where
-  aux₁ : x ∷ (L₁ ++ [ a ] ++ L₂) ≡ x ∷ L₁ ++ [ a ] ++ L₂
-  aux₁ = ++-assoc [ x ] L₁ ([ a ] ++ L₂)
-  aux₂ : a ∈ x ∷ (L₁ ++ [ a ] ++ L₂) 
-  aux₂ = ∈-there {{a∈l++[a]++d a L₁ L₂}}
+a∈l₁++[a]++l₂ : {A : Set} (a : A) (l₁ l₂ : List A) → a ∈ l₁ ++ [ a ] ++ l₂
+a∈l₁++[a]++l₂ a [] l₂ = ∈-here
+a∈l₁++[a]++l₂ a (x ∷ l₁) l₂ = l₁≡l₂∧a∈l₁⇒a∈l₂ aux₁ aux₂ where
+  aux₁ : x ∷ (l₁ ++ [ a ] ++ l₂) ≡ x ∷ l₁ ++ [ a ] ++ l₂
+  aux₁ = ++-assoc [ x ] l₁ ([ a ] ++ l₂)
+  aux₂ : a ∈ x ∷ (l₁ ++ [ a ] ++ l₂) 
+  aux₂ = ∈-there {{a∈l₁++[a]++l₂ a l₁ l₂}}
 
 ⟦_⟧ʰ : (Δ : Hypotheses) → HProp
 ⟦ [] ⟧ʰ = ⊤ʰ
 ⟦ δ at n ∷ Δ ⟧ʰ = ⟦ δ ⟧ n ∧ʰ ⟦ Δ ⟧ʰ
 
-⟦x⟧→⟦[x]⟧ʰ : ((δ at n) : TimeFormula) → proof(⟦ δ ⟧ n) → proof(⟦ [ δ at n ] ⟧ʰ)
-⟦x⟧→⟦[x]⟧ʰ (δ at n) = λ z → z , true
-
-⟦[x]⟧ʰ→⟦x⟧ : ((δ at n) : TimeFormula) → proof(⟦ [ δ at n ] ⟧ʰ) → proof(⟦ δ ⟧ n) 
-⟦[x]⟧ʰ→⟦x⟧ (δ at n) = proj₁
-
 ≡to→ : {Δ₁ Δ₂ : Hypotheses} → Δ₁ ≡ Δ₂ → proof(⟦ Δ₁ ⟧ʰ) → proof(⟦ Δ₂ ⟧ʰ)
 ≡to→ refl = λ z → z
+
+⟦x⟧→⟦[x]⟧ʰ : ((δ at n) : TimeFormula) → proof(⟦ δ ⟧ n) → proof(⟦ [ δ at n ] ⟧ʰ)
+⟦x⟧→⟦[x]⟧ʰ (δ at n) = λ z → z , true
 
 split : (Δ₁ Δ₂ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ⟧ʰ) → proof(⟦ Δ₁ ⟧ʰ ∧ʰ ⟦ Δ₂ ⟧ʰ)
 split [] Δ₂ p = true , p
@@ -84,14 +79,14 @@ add (δ at n) Δ δ∈Δ p = aux₂ (aux₁ p) where
   aux₂ : proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ ⟧ n) → proof(⟦ Δ ++ [ δ at n ] ⟧ʰ)
   aux₂ (p₁ , p₂) = join Δ [ δ at n ] (p₁ , ⟦x⟧→⟦[x]⟧ʰ (δ at n) p₂)
 
-shuffle : (Δ₁ Δ₂ Δ₃ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ⟧ʰ)
-shuffle Δ₁ Δ₂ Δ₃ p with split Δ₁ (Δ₂ ++ Δ₃) p 
+shuffle₃ : (Δ₁ Δ₂ Δ₃ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ⟧ʰ)
+shuffle₃ Δ₁ Δ₂ Δ₃ p with split Δ₁ (Δ₂ ++ Δ₃) p 
 ... | p₁ , q₁ with split Δ₂ Δ₃ q₁
 ... | p₂ , p₃ with join Δ₃ Δ₂ (p₃ , p₂)
 ... | x = join Δ₁ (Δ₃ ++ Δ₂) (p₁ , x)
 
-shuffle₂ : (Δ₁ Δ₂ Δ₃ Δ₄ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ++ Δ₄ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ++ Δ₄ ⟧ʰ)
-shuffle₂ Δ₁ Δ₂ Δ₃ Δ₄ p with split Δ₁ (Δ₂ ++ Δ₃ ++ Δ₄) p
+shuffle₄ : (Δ₁ Δ₂ Δ₃ Δ₄ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ++ Δ₄ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ++ Δ₄ ⟧ʰ)
+shuffle₄ Δ₁ Δ₂ Δ₃ Δ₄ p with split Δ₁ (Δ₂ ++ Δ₃ ++ Δ₄) p
 ... | p₁ , q₁ with split Δ₂ (Δ₃ ++ Δ₄) q₁
 ... | p₂ , q₂ with split Δ₃ Δ₄ q₂ 
 ... | p₃ , p₄ with join Δ₂ Δ₄ (p₂ , p₄)
@@ -102,7 +97,7 @@ Soundness : {Δ : Hypotheses} {δ : Formula} {n : ℕ} → Δ ⊢ δ AT n → pr
 
 Soundness (weaken {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to→ aux₂) (aux₁ p))) where
   aux₁ : proof(⟦ Δ₁ ++ [ φ at n ] ++ Δ₂ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₂ ++ [ φ at n ] ⟧ʰ)
-  aux₁ p = shuffle Δ₁ ([ φ at n ]) Δ₂ p
+  aux₁ p = shuffle₃ Δ₁ ([ φ at n ]) Δ₂ p
   aux₂ : Δ₁ ++ Δ₂ ++ [ φ at n ] ≡ (Δ₁ ++ Δ₂) ++ [ φ at n ]
   aux₂ = sym (++-assoc Δ₁ Δ₂ ([ φ at n ]))
   aux₃ : proof(⟦ (Δ₁ ++ Δ₂) ++ [ φ at n ] ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₂ ⟧ʰ)
@@ -110,7 +105,7 @@ Soundness (weaken {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to�
 
 Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to→ aux₂)(aux₁ p))) where
   aux₁ : proof(⟦ Δ₁ ++ [ φ at n ] ++ Δ₂ ⟧ʰ) → proof(⟦ (Δ₁ ++ [ φ at n ] ++ Δ₂) ++ [ φ at n ] ⟧ʰ)
-  aux₁ p = add (φ at n) (Δ₁ ++ [ φ at n ] ++ Δ₂) (a∈l++[a]++d (φ at n) Δ₁ Δ₂) p
+  aux₁ p = add (φ at n) (Δ₁ ++ [ φ at n ] ++ Δ₂) (a∈l₁++[a]++l₂ (φ at n) Δ₁ Δ₂) p
   aux₂ : (Δ₁ ++ [ φ at n ] ++ Δ₂) ++ [ φ at n ] ≡ Δ₁ ++ ([ φ at n ] ++ Δ₂) ++ [ φ at n ]
   aux₂ = begin 
       (Δ₁ ++ [ φ at n ] ++ Δ₂) ++ [ φ at n ]
@@ -120,15 +115,29 @@ Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡t
       Δ₁ ++ ([ φ at n ] ++ Δ₂) ++ [ φ at n ]
     ∎
   aux₃ : proof(⟦ Δ₁ ++ ([ φ at n ] ++ Δ₂) ++ [ φ at n ] ⟧ʰ) → proof(⟦ Δ₁ ++ [ φ at n ] ++ [ φ at n ] ++ Δ₂ ⟧ʰ)
-  aux₃ p = shuffle Δ₁ ([ φ at n ] ++ Δ₂) ([ φ at n ]) p
+  aux₃ p = shuffle₃ Δ₁ ([ φ at n ] ++ Δ₂) ([ φ at n ]) p
 
-Soundness (exchange {Δ₁} {Δ₂} φ₁ φ₂ {ψ} {m} {n} x) p = Soundness x (shuffle₂ Δ₁ [ φ₂ at n ] [ φ₁ at m ] Δ₂ p)
+Soundness (exchange {Δ₁} {Δ₂} φ₁ φ₂ {ψ} {m} {n} x) p = Soundness x (shuffle₄ Δ₁ [ φ₂ at n ] [ φ₁ at m ] Δ₂ p)
 
 Soundness (hyp {Δ} φ n {{φₙ∈Δ}}) = extract {n} {φ at n} {Δ} φₙ∈Δ
 
-Soundness (lem {Δ} {φ} {n} x) p = lemʰ {φ at n} (Soundness x p)
-
 Soundness (⊥-elim {Δ} {A} {n} {m} x) p = ⊥⇒⋆ {n} {A} (Soundness x p)
+
+Soundness ⊤-intro p = true
+
+Soundness (∧-intro x₁ x₂) p = Soundness x₁ p , Soundness x₂ p
+
+Soundness (∧-elim₁ x) p = proj₁ (Soundness x p)
+Soundness (∧-elim₂ x) p = proj₂ (Soundness x p)
+
+Soundness (∨-intro₁ x) p = ∣ inj₁ (Soundness x p) ∣
+Soundness (∨-intro₂ x) p = ∣ inj₂ (Soundness x p) ∣
+
+Soundness {Δ} {δ} (∨-elim {Δ} {φ₁} {φ₂} {B} {n} x x₁ x₂) p with (Soundness x p)
+... | q = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux q where
+  aux : proof (⟦ φ₁ ⟧ n) ⊎ proof (⟦ φ₂ ⟧ n) → proof(⟦ δ ⟧ n)
+  aux (inj₁ p₁) = Soundness x₁ (join Δ [ φ₁ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (φ₁ at n) p₁))
+  aux (inj₂ p₂) = Soundness x₂ (join Δ [ φ₂ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (φ₂ at n) p₂))
 
 Soundness (⇒-intro {Δ} {A} {B} {n} x) p = λ q → Soundness x (join Δ [ A at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (A at n) q))
 
@@ -141,20 +150,3 @@ Soundness (X-elim x) p = Soundness x p
 Soundness (G-intro x) p = λ x₁ x₂ → Soundness (x x₁ x₂) p
 
 Soundness (G-elim {m = m} x n≤m) p = (Soundness x p) m n≤m
-
-Soundness ⊤-intro p = true
-
-Soundness (∧-intro x₁ x₂) p = Soundness x₁ p , Soundness x₂ p
-
-Soundness (∧-elim₁ x) p = proj₁ (Soundness x p)
-Soundness (∧-elim₂ x) p = proj₂ (Soundness x p)
-
-Soundness (∨-intro₁ x) p = ∣ inj₁ (Soundness x p) ∣
-
-Soundness (∨-intro₂ x) p = ∣ inj₂ (Soundness x p) ∣
-
-Soundness {Δ} {δ} (∨-elim {Δ} {A₁} {A₂} {B} {n} x x₁ x₂) p with (Soundness x p)
-... | q = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux q where
-  aux : proof (⟦ A₁ ⟧ n) ⊎ proof (⟦ A₂ ⟧ n) → proof(⟦ δ ⟧ n)
-  aux (inj₁ p₁) = Soundness x₁ (join Δ [ A₁ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (A₁ at n) p₁))
-  aux (inj₂ p₂) = Soundness x₂ (join Δ [ A₂ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (A₂ at n) p₂))

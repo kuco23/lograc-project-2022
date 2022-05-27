@@ -8,23 +8,17 @@ open import Data.Product using (_,_ ; proj₁ ; proj₂)
 open import Logic AtomicFormula
 open import Semantics AtomicFormula η
 
--- stran 32 na https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf
+Axiom8 : (φ ψ : Formula) (n : ℕ) →  proof(⟦ (φ U ψ) ⇒ (F ψ) ⟧ n)
+Axiom8 φ ψ n p = ∥∥-elim (is-prop(⟦ F ψ ⟧ n)) (λ (k , r) q → q k (proj₁ r) (proj₁ (proj₂ r))) p
 
-Axiom8 : (A B : Formula) (n : ℕ) →  proof(⟦ (A U B) ⇒ (F B) ⟧ n)
-Axiom8 A B n p = ∥∥-elim (is-prop(⟦ F B ⟧ n)) (λ (k , r) q → q k (proj₁ r) (proj₁ (proj₂ r))) p
+Axiom2 : (φ ψ : Formula) (n : ℕ) → proof(⟦ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ)⟧ n)
+Axiom2 φ ψ n p = λ q k n≤k → p k n≤k (q k n≤k)
 
--- Need to find a inhabitant of proof() 
--- which is a function from proof (A U B) to proof (F B)
--- p is the proof (A U B), we use ∥∥-elim to unwrap (F B) 
+Axiom3 : (φ : Formula) (n : ℕ) → proof(⟦ X (¬ φ) ⇔ ¬ (X φ) ⟧ n)
+Axiom3 φ n = (λ x → x) , (λ x → x)
 
-Axiom2 : (A B : Formula) (n : ℕ) → proof(⟦ G (A ⇒ B) ⇒ (G A ⇒ G B)⟧ n)
-Axiom2 A B n p = λ q k n≤k → p k n≤k (q k n≤k) -- c-c c-a
+Axiom4 : (φ ψ : Formula) (n : ℕ) → proof(⟦ X(φ ⇒ ψ) ⇒ (X φ ⇒ X ψ) ⟧ n)
+Axiom4 φ ψ n p q = p q
 
-Axiom3 : (A : Formula) (n : ℕ) → proof(⟦ X (¬ A) ⇔ ¬ (X A) ⟧ n)
-Axiom3 A n = (λ x → x) , (λ x → x) -- c-c c-a
-
-Axiom4 : (A B : Formula) (n : ℕ) → proof(⟦ X(A ⇒ B) ⇒ (X A ⇒ X B) ⟧ n)
-Axiom4 A B n p q = p q
-
-Axiom5 : (A : Formula) (n : ℕ) → proof(⟦ G A ⇒ A ∧ X G A ⟧ n)
-Axiom5 A n x = {!!}
+Axiom5 : (φ : Formula) (n : ℕ) → proof(⟦ G φ ⇒ φ ∧ X G φ ⟧ n)
+Axiom5 φ n x = {!!}

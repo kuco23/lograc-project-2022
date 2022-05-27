@@ -37,3 +37,6 @@ Change semantics.agda so that it maps to HProp instead of Bool
 Use HoTT to get the semantics and ideas for how to do any of this
 
 CURRENT PROJECT: MAKE IT WORK LIKE SEMANTICS.AGDA
+
+inference rules:
+https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf page 78

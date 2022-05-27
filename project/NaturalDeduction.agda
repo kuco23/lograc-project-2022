@@ -25,7 +25,7 @@ data _∈_ {A : Set} : A → List A → Set where
     ∈-there : {x y : A} {xs : List A} → {{x ∈ xs}} → x ∈ (y ∷ xs)
 
 infixl 1 _⊢_AT_
-data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where    -- unicode \vdash
+data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
 
       -- structural rules
 
@@ -63,20 +63,13 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            → Δ ⊢ φ AT n
 
      -- classical logic
-
-     lem      : {Δ : Hypotheses} 
-          → {φ : Formula}
-          → {n : ℕ}
-          → Δ ⊢ φ AT n
-          -------------
-          → Δ ⊢ ¬ (¬ φ) AT n
   
      ⊥-elim   : {Δ : Hypotheses}
-          → {A : Formula}
+          → {φ : Formula}
           → {n m : ℕ}
           → Δ ⊢ ⊥ AT m
           -------------
-          → Δ ⊢ A AT n 
+          → Δ ⊢ φ AT n 
      
      ⊤-intro  : {Δ : Hypotheses}
           → {n : ℕ}
@@ -84,102 +77,92 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → Δ ⊢ ⊤ AT n
 
      ∧-intro  : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ A AT n
-          → Δ ⊢ B AT n
+          → Δ ⊢ φ AT n
+          → Δ ⊢ ψ AT n
           -----------------
-          → Δ ⊢ A ∧ B AT n
+          → Δ ⊢ φ ∧ ψ AT n
 
      ∧-elim₁  : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ A ∧ B AT n
+          → Δ ⊢ φ ∧ ψ AT n
           ----------------
-          → Δ ⊢ A AT n
+          → Δ ⊢ φ AT n
 
      ∧-elim₂  : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ A ∧ B AT n
+          → Δ ⊢ φ ∧ ψ AT n
           ----------------
-          → Δ ⊢ B AT n
+          → Δ ⊢ ψ AT n
 
      ∨-intro₁ : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ A AT n
+          → Δ ⊢ φ AT n
           -----------------
-          → Δ ⊢ A ∨ B AT n
+          → Δ ⊢ φ ∨ ψ AT n
 
      ∨-intro₂ : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ B AT n
+          → Δ ⊢ ψ AT n
           -----------------
-          → Δ ⊢ A ∨ B AT n
+          → Δ ⊢ φ ∨ ψ AT n
 
      ∨-elim   : {Δ : Hypotheses}
-          → {A₁ A₂ B : Formula}
+          → {φ₁ φ₂ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ A₁ ∨ A₂ AT n
-          → Δ ++ [ A₁ at n ] ⊢ B AT n
-          → Δ ++ [ A₂ at n ] ⊢ B AT n
+          → Δ ⊢ φ₁ ∨ φ₂ AT n
+          → Δ ++ [ φ₁ at n ] ⊢ ψ AT n
+          → Δ ++ [ φ₂ at n ] ⊢ ψ AT n
           ---------------------------
-          → Δ ⊢ B AT n
+          → Δ ⊢ ψ AT n
 
      ⇒-intro : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ++ [ A at n ] ⊢ B AT n
+          → Δ ++ [ φ at n ] ⊢ ψ AT n
           --------------------------
-          → Δ ⊢ (A ⇒ B) AT n
+          → Δ ⊢ (φ ⇒ ψ) AT n
 
      ⇒-elim : {Δ : Hypotheses}
-          → {A B : Formula}
+          → {φ ψ : Formula}
           → {n : ℕ}
-          → Δ ⊢ (A ⇒ B) AT n
-          → Δ ⊢ A AT n 
+          → Δ ⊢ (φ ⇒ ψ) AT n
+          → Δ ⊢ φ AT n 
           -------------
-          → Δ ⊢ B AT n
+          → Δ ⊢ ψ AT n
 
      -- simple temporal rules
-     -- https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf page 78
 
      X-intro : {Δ : Hypotheses}
-          → {A : Formula}
+          → {φ : Formula}
           → {n : ℕ}
-          → Δ ⊢ A AT (suc n)
+          → Δ ⊢ φ AT (suc n)
           ------------------
-          → Δ ⊢ (X A) AT n
+          → Δ ⊢ (X φ) AT n
 
      X-elim : {Δ : Hypotheses}
-          → {A : Formula}
+          → {φ : Formula}
           → {n : ℕ}
-          → Δ ⊢ X A AT n
+          → Δ ⊢ X φ AT n
           ------------------
-          → Δ ⊢ A AT (suc n)
-
-     {-ser◂ : {Δ : Hypotheses} -- ◂ is written like \t
-          → {A B : Formula}    -- Perhaps not necessary to write down here
-          → {n m : ℕ}             -- since our code works different from page
-          → Δ ++  ⊢ A AT m   -- 70 of the doctorate thesis
-          -------------
-          → Δ ⊢ A AT m -}
-
-     -- also lin◂ is ignored for now
+          → Δ ⊢ φ AT (suc n)
      
      G-intro : {Δ : Hypotheses}
-          → {A : Formula}
+          → {φ : Formula}
           → {n : ℕ}
-          → ((m : ℕ) → n ≤ m → Δ ⊢ A AT m)
+          → ((m : ℕ) → n ≤ m → Δ ⊢ φ AT m)
           --------------------------------
-          → Δ ⊢ G A AT n
+          → Δ ⊢ G φ AT n
 
      G-elim : {Δ : Hypotheses}
-          → {A : Formula}
+          → {φ : Formula}
           → {n m : ℕ}
-          → Δ ⊢ G A AT n
+          → Δ ⊢ G φ AT n
           → n ≤ m
           -------------
-          → Δ ⊢ A AT m
+          → Δ ⊢ φ AT m
