@@ -5,6 +5,11 @@ module Proofs (AtomicFormula : Set) (η : AtomicFormula → HProp) where
 open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
 open import Data.Nat.Properties using (_≤?_)
 open import Data.List using ([] ; [_] ; _∷_ ; _++_)
+open import Data.Nat.Properties
+open import Relation.Nullary renaming (¬_ to neg_)
+import Relation.Binary.PropositionalEquality as Eq
+open Eq                          using (_≡_; refl; sym; trans; cong; subst)
+open import Data.Empty renaming (⊥-elim to neg-elim)
 
 import Logic
 import Semantics
@@ -52,18 +57,26 @@ Ax5 A n = ⇒-intro (∧-intro
     (X-intro (G-intro λ m sn≤m → G-elim {n = n} {m = m} (hyp (G A) n {{∈-here}}) (sn≤m⇒n≤m sn≤m)))
   )
 
+lemma2 : (n m : ℕ) → (n ≤ suc m) → (neg n ≤ m) → n ≡ (suc m)
+lemma2 zero zero z≤n q = neg-elim (q z≤n)
+lemma2 (suc n) zero p q = cong suc (lemica p) where
+  lemica : (suc n ≤ suc zero) → n ≡ zero
+  lemica (s≤s x) = lemeta x where
+    lemeta : (n ≤ zero) → n ≡ zero
+    lemeta z≤n = refl
+lemma2 zero (suc m) z≤n q = neg-elim (q z≤n)
+lemma2 (suc n) (suc m) (s≤s p) q = cong suc (lemma2 n m p (lemica q)) where
+  lemica : (neg suc n ≤ suc m) → neg n ≤ m
+  lemica x r = x (s≤s r)
+
 lemma : (A : Formula) (n m : ℕ) → n ≤ m → G (A ⇒ X A) at n ∷ [ A at n ] ⊢ A AT m 
 lemma A zero zero p = hyp A zero {{∈-there {{∈-here}}}}
 -- have to split cases n = (suc m) or n <= m
-lemma A n (suc m) p with n ≤? m 
-... | x = {!   !}
-
-{- lemma A .zero (suc m) z≤n = X-elim (⇒-elim {A = A} 
-    (G-elim {n = zero} (hyp (G (A ⇒ X A)) zero {{∈-here}}) z≤n) 
-    (lemma A zero m z≤n)
-  )
-lemma A (suc k) (suc m) (s≤s {k} {m} p) = {!  hyp A (suc m) {{∈-there {{∈-here}}}} !} -}
+lemma A n (suc m) p with (n ≤? m)
+... | yes q = X-elim (⇒-elim {A = A} (G-elim (hyp (G (A ⇒ X A)) n {{∈-here}}) q) (lemma A n m q))
+... | no q = lemica (lemma2 n m p q) (hyp A n {{∈-there {{∈-here}}}}) where
+  lemica : n ≡ suc m → G (A ⇒ X A) at n ∷ [ A at n ] ⊢ A AT n → G (A ⇒ X A) at n ∷ [ A at n ] ⊢ A AT suc m
+  lemica refl d = d
 
 Ax6 : (A : Formula) (n : ℕ) → [] ⊢ G (A ⇒ X A) ⇒ (A ⇒ G A) AT n 
-Ax6 A n = ⇒-intro (⇒-intro (G-intro λ m n≤m → {! m  !}
-  ))  
+Ax6 A n = ⇒-intro (⇒-intro (G-intro λ m n≤m → lemma A n m n≤m))
