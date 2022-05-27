@@ -3,6 +3,7 @@ open import HProp
 module Proofs (AtomicFormula : Set) (η : AtomicFormula → HProp) where
 
 open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
+open import Data.Nat.Properties using (_≤?_)
 open import Data.List using ([] ; [_] ; _∷_ ; _++_)
 
 import Logic
@@ -54,7 +55,8 @@ Ax5 A n = ⇒-intro (∧-intro
 lemma : (A : Formula) (n m : ℕ) → n ≤ m → G (A ⇒ X A) at n ∷ [ A at n ] ⊢ A AT m 
 lemma A zero zero p = hyp A zero {{∈-there {{∈-here}}}}
 -- have to split cases n = (suc m) or n <= m
-lemma A n (suc m) p = {!  p !}
+lemma A n (suc m) p with n ≤? m 
+... | x = {!   !}
 
 {- lemma A .zero (suc m) z≤n = X-elim (⇒-elim {A = A} 
     (G-elim {n = zero} (hyp (G (A ⇒ X A)) zero {{∈-here}}) z≤n) 
