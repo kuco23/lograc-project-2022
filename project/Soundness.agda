@@ -133,8 +133,7 @@ Soundness (∧-elim₂ x) p = proj₂ (Soundness x p)
 Soundness (∨-intro₁ x) p = ∣ inj₁ (Soundness x p) ∣
 Soundness (∨-intro₂ x) p = ∣ inj₂ (Soundness x p) ∣
 
-Soundness {Δ} {δ} (∨-elim {Δ} {φ₁} {φ₂} {B} {n} x x₁ x₂) p with (Soundness x p)
-... | q = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux q where
+Soundness {Δ} {δ} (∨-elim {Δ} {φ₁} {φ₂} {B} {n} x x₁ x₂) p = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux (Soundness x p) where
   aux : proof (⟦ φ₁ ⟧ n) ⊎ proof (⟦ φ₂ ⟧ n) → proof(⟦ δ ⟧ n)
   aux (inj₁ p₁) = Soundness x₁ (join Δ [ φ₁ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (φ₁ at n) p₁))
   aux (inj₂ p₂) = Soundness x₂ (join Δ [ φ₂ at n ] (p , ⟦x⟧→⟦[x]⟧ʰ (φ₂ at n) p₂))

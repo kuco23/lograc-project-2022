@@ -27,11 +27,9 @@ sn≤m⇒n≤m {suc n} (s≤s p) = s≤s (sn≤m⇒n≤m p)
 
 n≤sm∧¬n≤m⇒n≡sm : (n m : ℕ) → (n ≤ suc m) → (neg n ≤ m) → n ≡ (suc m)
 n≤sm∧¬n≤m⇒n≡sm zero zero z≤n q = neg-elim (q z≤n)
-n≤sm∧¬n≤m⇒n≡sm (suc n) zero p q = cong suc (aux p) where
-  aux : (suc n ≤ suc zero) → n ≡ zero
-  aux (s≤s x) = aux₁ x where
-    aux₁ : (n ≤ zero) → n ≡ zero
-    aux₁ z≤n = refl
+n≤sm∧¬n≤m⇒n≡sm (suc n) zero (s≤s p) q = cong suc (aux p) where
+  aux : (n ≤ zero) → n ≡ zero
+  aux z≤n = refl
 n≤sm∧¬n≤m⇒n≡sm zero (suc m) z≤n q = neg-elim (q z≤n)
 n≤sm∧¬n≤m⇒n≡sm (suc n) (suc m) (s≤s p) q = cong suc (n≤sm∧¬n≤m⇒n≡sm n m p (aux q)) where
   aux : (neg suc n ≤ suc m) → neg n ≤ m
