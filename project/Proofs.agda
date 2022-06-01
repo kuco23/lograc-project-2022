@@ -35,14 +35,14 @@ n≤sm∧¬n≤m⇒n≡sm (suc n) (suc m) (s≤s p) q = cong suc (n≤sm∧¬n�
   aux : (neg suc n ≤ suc m) → neg n ≤ m
   aux x r = x (s≤s r)
 
-Ax2 : (φ ψ : Formula) → (n : ℕ) → [] ⊢ (G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ)) AT n
+Ax2 : (φ ψ : Formula) → (n : ℕ) → [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) AT n
 Ax2 φ ψ n = ⇒-intro (⇒-intro (
   G-intro (λ m p → ⇒-elim {φ = φ} 
     (G-elim (hyp (G (φ ⇒ ψ)) n {{∈-here}}) p)
     (G-elim (hyp (G φ) n {{∈-there {{∈-here}}}}) p))
   ))
 
-Ax3 : (φ : Formula) → (n : ℕ) → [] ⊢ (X (¬ φ) ⇔ ¬ (X φ)) AT n
+Ax3 : (φ : Formula) → (n : ℕ) → [] ⊢ X (¬ φ) ⇔ ¬ (X φ) AT n
 Ax3 φ n = ∧-intro
   (⇒-intro ( ⇒-intro (⊥-elim {m = suc n} (⇒-elim {φ = φ} 
     (X-elim (hyp (X (¬ φ)) n {{∈-here}})) 

@@ -16,7 +16,7 @@ record TimeFormula : Set where
 open TimeFormula public
 infixr 19 _at_
 
-Hypotheses = List (TimeFormula)
+Hypotheses = List TimeFormula
 
 infix 3 _∈_
 data _∈_ {A : Set} : A → List A → Set where
