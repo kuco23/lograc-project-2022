@@ -16,4 +16,22 @@ module Semantics (AtomicFormula : Set) (η : AtomicFormula → HProp) where
       ⟦ P ⇒ Q ⟧ n = ⟦ P ⟧ n ⇒ʰ ⟦ Q ⟧ n
       ⟦ X P ⟧ n = ⟦ P ⟧ (suc n)
       ⟦ G P ⟧ n = ∀ʰ ℕ ((λ m → (n ≤ʰ m) ⇒ʰ ⟦ P ⟧ m))
-      ⟦ P U Q ⟧ n = ∃ʰ ℕ  (λ n' → ((n ≤ʰ n') ∧ʰ ((⟦ Q ⟧) n' ∧ʰ (∀ʰ ℕ (λ m → (((n ≤ʰ m) ∧ʰ (m <ʰ n')) ⇒ʰ ⟦ P ⟧ m))))))
+      ⟦ P U Q ⟧ n = ∃ʰ ℕ  (λ n' → (
+                  (n ≤ʰ n') ∧ʰ ((⟦ Q ⟧) n' ∧ʰ (∀ʰ ℕ (λ m → (
+                              ((n ≤ʰ m) ∧ʰ (m <ʰ n')) ⇒ʰ ⟦ P ⟧ m
+                        ))))
+            )) 
+      
+      open import Data.Unit using (tt)
+      open import Data.Product using (_,_ ; proj₁ ; proj₂)
+      
+      absurd : {m n : ℕ} {A : Formula} → proof(⟦ A ⟧ n) → proof(⟦ A ⟧ m)
+      absurd {m} {n} {` x} p = p
+      absurd {m} {n} {⊤} p = tt
+      absurd {m} {n} {⊥} p = p
+      absurd {m} {n} {A ∧ A₁} p = (absurd {A = A} (proj₁ p)) , (absurd  {A = A₁} (proj₂ p))
+      absurd {m} {n} {A ∨ A₁} p = {!   !}
+      absurd {m} {n} {A ⇒ A₁} p = {!    !}
+      absurd {m} {n} {G A} p = λ k q → {!   !}
+      absurd {m} {n} {A U A₁} = {!   !}
+      absurd {m} {n} {X A} p = absurd {suc m} {suc n} {A} p
