@@ -1,13 +1,13 @@
+open import Data.Nat using (ℕ ; suc ; _≤_)
 open import HProp
 
-module Soundness (AtomicFormula : Set) (η : AtomicFormula → HProp) where
+module Soundness (AtomicFormula : Set) (η : ℕ → AtomicFormula → HProp) where
 
 open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
 
-open import Data.Nat using (ℕ ; suc ; _≤_)
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)
-open import Data.Product using (_,_ ; proj₁ ; proj₂)
+open import Data.Product using (Σ ; _,_ ; proj₁ ; proj₂)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_ ; refl ; cong ; sym)
@@ -149,3 +149,14 @@ Soundness (X-elim x) p = Soundness x p
 Soundness (G-intro x) p = λ x₁ x₂ → Soundness (x x₁ x₂) p
 
 Soundness (G-elim {m = m} x n≤m) p = (Soundness x p) m n≤m
+
+Soundness (U-intro {m = m} n≤m Δ⊢ψₘ Δ⊢φₖ) p = ∣ 
+    m , n≤m , Soundness Δ⊢ψₘ p , 
+    (λ x₁ x₂ → Soundness (Δ⊢φₖ x₁ (proj₁ x₂) (proj₂ x₂)) p)
+  ∣
+
+Soundness (U-elim {Δ} {φ} {ψ} {n} {m} {k} n≤m n≤k k<m Δ⊢ψₘ Δ⊢φUψₙ) p with Soundness Δ⊢ψₘ p | Soundness Δ⊢φUψₙ p
+... | x | y = ∥∥-elim (is-prop(⟦ φ ⟧ k)) aux y where 
+  aux : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄)))) 
+      → proof (⟦ φ ⟧ k)
+  aux (a , b , c , snd) = snd k (n≤k , {!   !})

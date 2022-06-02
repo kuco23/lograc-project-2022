@@ -1,6 +1,6 @@
 module NaturalDeduction (AtomicFormula : Set) where
 
-open import Data.Nat using (ℕ ; suc ; _≤_)
+open import Data.Nat using (ℕ ; suc ; _≤_ ; _<_)
 open import Data.List using (List ; [] ; _∷_ ; [_] ; _++_)
 open import Data.Sum using (_⊎_)
 
@@ -25,7 +25,7 @@ data _∈_ {A : Set} : A → List A → Set where
     ∈-there : {x y : A} {xs : List A} → {{x ∈ xs}} → x ∈ (y ∷ xs)
 
 infixl 1 _⊢_AT_
-data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
+data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
 
       -- structural rules
 
@@ -62,7 +62,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
            ----------------
            → Δ ⊢ φ AT n
 
-     -- classical logic
+     -- propositional logic
   
      ⊥-elim   : {Δ : Hypotheses}
           → {φ : Formula}
@@ -136,7 +136,7 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           -------------
           → Δ ⊢ ψ AT n
 
-     -- simple temporal rules
+     -- temporal logic
 
      X-intro : {Δ : Hypotheses}
           → {φ : Formula}
@@ -166,3 +166,23 @@ data _⊢_AT_  : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set wher
           → n ≤ m
           -------------
           → Δ ⊢ φ AT m
+     
+     U-intro : {Δ : Hypotheses} 
+          → {φ ψ : Formula}
+          → {n m : ℕ} 
+          → n ≤ m
+          → Δ ⊢ ψ AT m
+          → ((k : ℕ) → n ≤ k → k < m → Δ ⊢ φ AT k)
+          ----------------------------------------
+          → Δ ⊢ φ U ψ AT n
+
+     U-elim : {Δ : Hypotheses} 
+          → {φ ψ : Formula} 
+          → {n m k : ℕ} 
+          → n ≤ m 
+          → n ≤ k 
+          → suc k ≤ m 
+          → ((m' k' : ℕ) → n ≤ m' → n ≤ k' → suc k' ≤ m' → Δ ⊢ ψ AT m' → Δ ⊢ φ AT k')
+          → Δ ⊢ φ U ψ AT n 
+          -----------------
+          → Δ ⊢ φ AT k

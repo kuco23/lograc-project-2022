@@ -1,8 +1,8 @@
+open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
 open import HProp
 
-module Proofs (AtomicFormula : Set) (η : AtomicFormula → HProp) where
+module Proofs (AtomicFormula : Set) (η : ℕ → AtomicFormula → HProp) where
 
-open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
 open import Data.Nat.Properties using (_≤?_)
 open import Data.List using ([] ; [_] ; _∷_ ; _++_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
