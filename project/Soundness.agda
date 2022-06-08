@@ -1,7 +1,7 @@
 open import Data.Nat using (ℕ ; suc ; _≤_)
 open import HProp
 
-module Soundness (AtomicFormula : Set) (η : ℕ → AtomicFormula → HProp) where
+module Soundness (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp) where
 
 open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
 
@@ -155,8 +155,8 @@ Soundness (U-intro {m = m} n≤m Δ⊢ψₘ Δ⊢φₖ) p = ∣
     (λ x₁ x₂ → Soundness (Δ⊢φₖ x₁ (proj₁ x₂) (proj₂ x₂)) p)
   ∣
 
-Soundness (U-elim {Δ} {φ} {ψ} {n} {m} {k} n≤m n≤k k<m Δ⊢ψₘ Δ⊢φUψₙ) p with Soundness Δ⊢ψₘ p | Soundness Δ⊢φUψₙ p
+{- Soundness (U-elim {Δ} {φ} {ψ} {n} {m} {k} n≤m n≤k k<m Δ⊢ψₘ Δ⊢φUψₙ) p with Soundness Δ⊢ψₘ p | Soundness Δ⊢φUψₙ p
 ... | x | y = ∥∥-elim (is-prop(⟦ φ ⟧ k)) aux y where 
   aux : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄)))) 
       → proof (⟦ φ ⟧ k)
-  aux (a , b , c , snd) = snd k (n≤k , {!   !})
+  aux (a , b , c , snd) = snd k (n≤k , {!   !}) -}

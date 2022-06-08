@@ -1,7 +1,7 @@
 open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
 open import HProp
 
-module Proofs (AtomicFormula : Set) (η : ℕ → AtomicFormula → HProp) where
+module Proofs (AtomicFormula : Set) where
 
 open import Data.Nat.Properties using (_≤?_)
 open import Data.List using ([] ; [_] ; _∷_ ; _++_)
@@ -10,11 +10,9 @@ open import Data.Empty renaming (⊥-elim to neg-elim)
 open import Relation.Nullary renaming (¬_ to neg_)
 
 import Logic
-import Semantics
 import NaturalDeduction
 
 open module L = Logic AtomicFormula
-open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
 n≤n : (n : ℕ) → n ≤ n 

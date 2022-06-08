@@ -1,7 +1,7 @@
 open import Data.Nat using (ℕ)
 open import HProp
 
-module Tautologies (AtomicFormula : Set) (η : ℕ → AtomicFormula → HProp)  where
+module Tautologies (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp)  where
 
 open import Data.Product using (_,_ ; proj₁ ; proj₂)
 

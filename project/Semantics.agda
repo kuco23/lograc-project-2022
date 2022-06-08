@@ -1,14 +1,14 @@
 open import Data.Nat using (ℕ ; suc)
 open import HProp
 
-module Semantics (AtomicFormula : Set) (η : ℕ → AtomicFormula → HProp) where
+module Semantics (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp) where
 
       open import Logic AtomicFormula
 
       ℙ = ℕ → HProp
 
       ⟦_⟧ : Formula → ℙ
-      ⟦ ` P ⟧ n = η n P
+      ⟦ ` P ⟧ n = η P n
       ⟦ ⊤ ⟧ n = ⊤ʰ
       ⟦ ⊥ ⟧ n = ⊥ʰ
       ⟦ P ∧ Q ⟧ n = ⟦ P ⟧ n ∧ʰ ⟦ Q ⟧ n
