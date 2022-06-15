@@ -3,6 +3,8 @@ module NaturalDeduction (AtomicFormula : Set) where
 open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s ; _<_)
 open import Data.List using (List ; [] ; _∷_ ; [_] ; _++_)
 open import Data.Sum using (_⊎_)
+open import Data.Nat.Properties using (_≤?_)
+open import Relation.Nullary renaming (¬_ to neg_)
 
 open import Logic AtomicFormula
 
@@ -24,10 +26,12 @@ data _∈_ {A : Set} : A → List A → Set where
     ∈-here  : {x : A} → {xs : List A} → x ∈ (x ∷ xs)
     ∈-there : {x y : A} {xs : List A} → {{x ∈ xs}} → x ∈ (y ∷ xs)
 
-time-range : (φ : Formula) (m n : ℕ) → m ≤ n → Hypotheses 
-time-range φ .zero zero z≤n = [ φ at zero ]
-time-range φ .zero (suc n) z≤n = [ φ at zero ]
-time-range φ .(suc _) (suc n) (s≤s p) = {!   !}
+-- [φ at n-1, φ at n-2, ..., φ at m]
+time-range : (φ : Formula) (m n : ℕ) → Hypotheses 
+time-range φ m zero = []
+time-range φ m (suc n) with m ≤? n
+... | yes _ =  (φ at n) ∷ (time-range φ m n)
+... | no _ = []
 
 infixl 1 _⊢_AT_
 data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
@@ -183,9 +187,11 @@ data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
 
      U-elim : {Δ : Hypotheses} 
           → {φ ψ ρ : Formula} 
-          → {n m k : ℕ} 
-          → (p : n ≤ m)
-          → (time-range φ n m p) ++ Δ ⊢ ρ AT n
+          → {n m k : ℕ}
+          → n ≤ m
+          → n ≤ k → suc k ≤ m
+          → Δ ++ (time-range φ n m) ⊢ ρ AT k
+          → Δ ⊢ ψ AT m
           → Δ ⊢ φ U ψ AT n
           ----------------
-          → Δ ⊢ ρ AT n
+          → Δ ⊢ ρ AT k
