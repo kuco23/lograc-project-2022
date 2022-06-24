@@ -7,8 +7,10 @@ Temporal logic extends propositional logic by adding three logical connectives (
 - **X A at n** means A holds at time n + 1,
 - **G A at n** means A holds from n on,
 - **A U B at n** means there is a time m ≥ n such that B holds at m and A holds from n to m-1.
+
 The U operator can be interpreted as _until_. We can also add
 - **F A at n** means A holds at least once from n on (at some future time)
+
 as syntactic sugar.
 
 ## Project Overview
