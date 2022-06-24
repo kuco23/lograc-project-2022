@@ -36,8 +36,8 @@ n≤sm∧¬n≤m⇒n≡sm (suc n) (suc m) (s≤s p) q = cong suc (n≤sm∧¬n�
 Ax2 : (φ ψ : Formula) → (n : ℕ) → [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) AT n
 Ax2 φ ψ n = ⇒-intro (⇒-intro (
   G-intro (λ m p → ⇒-elim {φ = φ} 
-    (G-elim (hyp (G (φ ⇒ ψ)) n {{∈-here}}) p)
-    (G-elim (hyp (G φ) n {{∈-there {{∈-here}}}}) p))
+    (G-elim p (hyp (G (φ ⇒ ψ)) n {{∈-here}}))
+    (G-elim p (hyp (G φ) n {{∈-there {{∈-here}}}})))
   ))
 
 Ax3 : (φ : Formula) → (n : ℕ) → [] ⊢ X (¬ φ) ⇔ ¬ (X φ) AT n
@@ -59,8 +59,8 @@ Ax4 φ ψ n = ⇒-intro (⇒-intro (X-intro (⇒-elim {φ = φ}
 
 Ax5 : (φ : Formula) (n : ℕ) → [] ⊢ G φ ⇒ φ ∧ X G φ AT n
 Ax5 φ n = ⇒-intro (∧-intro 
-    (G-elim {n = n} {m = n} (hyp (G φ) n {{∈-here}}) (n≤n n)) 
-    (X-intro (G-intro λ m sn≤m → G-elim {n = n} {m = m} (hyp (G φ) n {{∈-here}}) (sn≤m⇒n≤m sn≤m)))
+    (G-elim {n = n} {m = n} (n≤n n) (hyp (G φ) n {{∈-here}})) 
+    (X-intro (G-intro λ m sn≤m → G-elim {n = n} {m = m} (sn≤m⇒n≤m sn≤m) (hyp (G φ) n {{∈-here}})))
   )
 
 Ax6 : (φ : Formula) (n : ℕ) → [] ⊢ G (φ ⇒ X φ) ⇒ (φ ⇒ G φ) AT n 
@@ -68,7 +68,7 @@ Ax6 φ n = ⇒-intro (⇒-intro (G-intro λ m n≤m → aux φ n m n≤m)) where
   aux : (φ : Formula) (n m : ℕ) → n ≤ m → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT m 
   aux φ zero zero p = hyp φ zero {{∈-there {{∈-here}}}}
   aux φ n (suc m) p with (n ≤? m)
-  ... | yes q = X-elim (⇒-elim {φ = φ} (G-elim (hyp (G (φ ⇒ X φ)) n {{∈-here}}) q) (aux φ n m q))
+  ... | yes q = X-elim (⇒-elim {φ = φ} (G-elim q (hyp (G (φ ⇒ X φ)) n {{∈-here}})) (aux φ n m q))
   ... | no q = aux₁ (n≤sm∧¬n≤m⇒n≡sm n m p q) (hyp φ n {{∈-there {{∈-here}}}}) where
     aux₁ : n ≡ suc m → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT n → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT suc m
     aux₁ refl d = d
