@@ -33,7 +33,7 @@ m≤n⇒m≤sn : (m n : ℕ) → m ≤ n → m ≤ suc n
 m≤n⇒m≤sn .zero n z≤n = z≤n
 m≤n⇒m≤sn .(suc _) .(suc _) (s≤s p) = s≤s (m≤n⇒m≤sn _ _ p)
 
-⊥⇒⋆ : {n : ℕ} {A : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ A ⟧ n)
+⊥⇒⋆ : {n : ℕ} {φ : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ φ ⟧ n)
 ⊥⇒⋆ ()
 
 l++[]≡l : {A : Set} (l : List A) → l ++ [] ≡ l 
@@ -105,7 +105,7 @@ shuffle₄ Δ₁ Δ₂ Δ₃ Δ₄ p with split Δ₁ (Δ₂ ++ Δ₃ ++ Δ₄) 
 
 Soundness : {Δ : Hypotheses} {δ : Formula} {n : ℕ} → Δ ⊢ δ AT n → proof(⟦ Δ ⟧ʰ) → proof(⟦ δ ⟧ n)
 
-Soundness (weaken {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to→ aux₂) (aux₁ p))) where
+Soundness (weaken {Δ₁} {Δ₂} φ {n = n} x) p = Soundness x (aux₃((≡to→ aux₂) (aux₁ p))) where
   aux₁ : proof(⟦ Δ₁ ++ [ φ at n ] ++ Δ₂ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₂ ++ [ φ at n ] ⟧ʰ)
   aux₁ p = shuffle₃ Δ₁ ([ φ at n ]) Δ₂ p
   aux₂ : Δ₁ ++ Δ₂ ++ [ φ at n ] ≡ (Δ₁ ++ Δ₂) ++ [ φ at n ]
@@ -113,7 +113,7 @@ Soundness (weaken {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to�
   aux₃ : proof(⟦ (Δ₁ ++ Δ₂) ++ [ φ at n ] ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₂ ⟧ʰ)
   aux₃ p = proj₁ (split (Δ₁ ++ Δ₂) [ φ at n ] p)
 
-Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to→ aux₂)(aux₁ p))) where
+Soundness (contract {Δ₁} {Δ₂} φ {n = n} x) p = Soundness x (aux₃((≡to→ aux₂)(aux₁ p))) where
   aux₁ : proof(⟦ Δ₁ ++ [ φ at n ] ++ Δ₂ ⟧ʰ) → proof(⟦ (Δ₁ ++ [ φ at n ] ++ Δ₂) ++ [ φ at n ] ⟧ʰ)
   aux₁ p = add (φ at n) (Δ₁ ++ [ φ at n ] ++ Δ₂) (a∈l₁++[a]++l₂ (φ at n) Δ₁ Δ₂) p
   aux₂ : (Δ₁ ++ [ φ at n ] ++ Δ₂) ++ [ φ at n ] ≡ Δ₁ ++ ([ φ at n ] ++ Δ₂) ++ [ φ at n ]
@@ -127,11 +127,11 @@ Soundness (contract {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡t
   aux₃ : proof(⟦ Δ₁ ++ ([ φ at n ] ++ Δ₂) ++ [ φ at n ] ⟧ʰ) → proof(⟦ Δ₁ ++ [ φ at n ] ++ [ φ at n ] ++ Δ₂ ⟧ʰ)
   aux₃ p = shuffle₃ Δ₁ ([ φ at n ] ++ Δ₂) ([ φ at n ]) p
 
-Soundness (exchange {Δ₁} {Δ₂} φ₁ φ₂ {ψ} {m} {n} x) p = Soundness x (shuffle₄ Δ₁ [ φ₂ at n ] [ φ₁ at m ] Δ₂ p)
+Soundness (exchange {Δ₁} {Δ₂} φ₁ φ₂ {m = m} {n = n} x) p = Soundness x (shuffle₄ Δ₁ [ φ₂ at n ] [ φ₁ at m ] Δ₂ p)
 
 Soundness (hyp {Δ} φ n {{φₙ∈Δ}}) = extract {n} {φ at n} {Δ} φₙ∈Δ
 
-Soundness (⊥-elim {Δ} {A} {n} {m} x) p = ⊥⇒⋆ {n} {A} (Soundness x p)
+Soundness (⊥-elim {φ = φ} {n = n} x) p = ⊥⇒⋆ {n} {φ} (Soundness x p)
 
 Soundness ⊤-intro p = true
 
@@ -143,12 +143,12 @@ Soundness (∧-elim₂ x) p = proj₂ (Soundness x p)
 Soundness (∨-intro₁ x) p = ∣ inj₁ (Soundness x p) ∣
 Soundness (∨-intro₂ x) p = ∣ inj₂ (Soundness x p) ∣
 
-Soundness {Δ} {δ} (∨-elim {Δ} {φ₁} {φ₂} {B} {n} x x₁ x₂) p = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux (Soundness x p) where
+Soundness {Δ} {δ} (∨-elim {Δ} {φ₁} {φ₂} {n = n} x x₁ x₂) p = ∥∥-elim (is-prop (⟦ δ ⟧ n)) aux (Soundness x p) where
   aux : proof (⟦ φ₁ ⟧ n) ⊎ proof (⟦ φ₂ ⟧ n) → proof(⟦ δ ⟧ n)
   aux (inj₁ p₁) = Soundness x₁ (join Δ [ φ₁ at n ] p (⟦x⟧→⟦[x]⟧ʰ (φ₁ at n) p₁))
   aux (inj₂ p₂) = Soundness x₂ (join Δ [ φ₂ at n ] p (⟦x⟧→⟦[x]⟧ʰ (φ₂ at n) p₂))
 
-Soundness (⇒-intro {Δ} {A} {B} {n} x) p = λ q → Soundness x (join Δ [ A at n ] p (⟦x⟧→⟦[x]⟧ʰ (A at n) q))
+Soundness (⇒-intro {Δ} {φ} {n = n} x) p = λ q → Soundness x (join Δ [ φ at n ] p (⟦x⟧→⟦[x]⟧ʰ (φ at n) q))
 
 Soundness (⇒-elim x₁ x₂) p = (Soundness x₁ p) (Soundness x₂ p)
 
