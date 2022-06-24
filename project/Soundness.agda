@@ -9,7 +9,7 @@ open import Data.List.Properties using (++-assoc)
 open import Data.Product using (Σ ; _,_ ; proj₁ ; proj₂)
 
 open import Data.Nat.Properties using (_≤?_)
-open import Relation.Nullary renaming (¬_ to neg_)
+open import Relation.Nullary using (yes ; no)
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_ ; refl ; cong ; sym)
@@ -24,6 +24,14 @@ open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
 open import Data.Sum.Base
+
+n≤n : (n : ℕ) → n ≤ n 
+n≤n zero = z≤n
+n≤n (suc n) = s≤s (n≤n n)
+
+m≤n⇒m≤sn : (m n : ℕ) → m ≤ n → m ≤ suc n 
+m≤n⇒m≤sn .zero n z≤n = z≤n
+m≤n⇒m≤sn .(suc _) .(suc _) (s≤s p) = s≤s (m≤n⇒m≤sn _ _ p)
 
 ⊥⇒⋆ : {n : ℕ} {A : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ A ⟧ n)
 ⊥⇒⋆ ()
@@ -95,27 +103,6 @@ shuffle₄ Δ₁ Δ₂ Δ₃ Δ₄ p with split Δ₁ (Δ₂ ++ Δ₃ ++ Δ₄) 
 ... | x₁ with join Δ₃ (Δ₂ ++ Δ₄) p₃ x₁
 ... | x₂ = join Δ₁ (Δ₃ ++ Δ₂ ++ Δ₄) p₁ x₂
 
-
-n≤n : (n : ℕ) → n ≤ n 
-n≤n zero = z≤n
-n≤n (suc n) = s≤s (n≤n n)
-
-m≤n⇒m≤sn : (m n : ℕ) → m ≤ n → m ≤ suc n 
-m≤n⇒m≤sn .zero n z≤n = z≤n
-m≤n⇒m≤sn .(suc _) .(suc _) (s≤s p) = s≤s (m≤n⇒m≤sn _ _ p)
-
-lemma : {m n : ℕ} {φ : Formula} → n ≤ m
-    → ((x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄))
-    → proof ⟦ time-range φ n m ⟧ʰ
-lemma {zero} p f = true
-lemma {suc m} {n} {φ} p f with n ≤? m
-... | yes n≤m = (f m) (n≤m , n≤n (suc m)) , aux₁₂ where
-    aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
-    aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (m≤n⇒m≤sn (suc x₄) m sx₄≤m))
-    aux₁₂ : proof ⟦ time-range φ n m ⟧ʰ 
-    aux₁₂ = lemma {m} {n} n≤m aux₁₁
-lemma {suc m} {n} p f | no _ = true
-
 Soundness : {Δ : Hypotheses} {δ : Formula} {n : ℕ} → Δ ⊢ δ AT n → proof(⟦ Δ ⟧ʰ) → proof(⟦ δ ⟧ n)
 
 Soundness (weaken {Δ₁} {Δ₂} φ {ψ} {n} x) p = Soundness x (aux₃((≡to→ aux₂) (aux₁ p))) where
@@ -171,7 +158,7 @@ Soundness (X-elim x) p = Soundness x p
 
 Soundness (G-intro x) p = λ x₁ x₂ → Soundness (x x₁ x₂) p
 
-Soundness (G-elim {m = m} x n≤m) p = (Soundness x p) m n≤m
+Soundness (G-elim {m = m} n≤m x) p = (Soundness x p) m n≤m
 
 Soundness (U-intro {m = m} n≤m Δ⊢ψₘ Δ⊢φₖ) p = ∣ 
     m , n≤m , Soundness Δ⊢ψₘ p , 
@@ -179,8 +166,17 @@ Soundness (U-intro {m = m} n≤m Δ⊢ψₘ Δ⊢φₖ) p = ∣
   ∣
 
 Soundness (U-elim {Δ} {φ} {ψ} {ρ} {n} {k} f Δ⊢φUψₙ) p = ∥∥-elim (is-prop(⟦ ρ ⟧ k)) aux₂ (Soundness Δ⊢φUψₙ p) where 
+  aux₁ : {m n : ℕ} {φ : Formula} → n ≤ m 
+      → ((x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄))
+      → proof ⟦ time-range φ n m ⟧ʰ
+  aux₁ {zero} p f = true
+  aux₁ {suc m} {n} {φ} p f with n ≤? m
+  ... | yes n≤m = (f m) (n≤m , n≤n (suc m)) , aux₁ {m} {n} n≤m aux₁₁ where
+      aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
+      aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (m≤n⇒m≤sn (suc x₄) m sx₄≤m))
+  ... | no _ = true
   aux₂ : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄)))) 
       → proof (⟦ ρ ⟧ k)
-  aux₂ (m , n≤m , q , g) = Soundness (f n≤m) aux₁₁ where 
-    aux₁₁ : proof(⟦ Δ ++ time-range φ n m ++ [ ψ at m ] ⟧ʰ)
-    aux₁₁ = join Δ (time-range φ n m ++ [ ψ at m ]) p (join (time-range φ n m) [ ψ at m ] (lemma n≤m g) (⟦x⟧→⟦[x]⟧ʰ (ψ at m) q))
+  aux₂ (m , n≤m , q , g) = Soundness (f n≤m) aux₂₁ where 
+    aux₂₁ : proof(⟦ Δ ++ time-range φ n m ++ [ ψ at m ] ⟧ʰ)
+    aux₂₁ = join Δ (time-range φ n m ++ [ ψ at m ]) p (join (time-range φ n m) [ ψ at m ] (aux₁ n≤m g) (⟦x⟧→⟦[x]⟧ʰ (ψ at m) q))

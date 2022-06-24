@@ -8,7 +8,6 @@ open import Relation.Nullary renaming (¬_ to neg_)
 
 open import Logic AtomicFormula
 
-
 record TimeFormula : Set where
   constructor _at_
   field
@@ -171,8 +170,8 @@ data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
      G-elim : {Δ : Hypotheses}
           → {φ : Formula}
           → {n m : ℕ}
-          → Δ ⊢ G φ AT n
           → n ≤ m
+          → Δ ⊢ G φ AT n
           -------------
           → Δ ⊢ φ AT m
      
