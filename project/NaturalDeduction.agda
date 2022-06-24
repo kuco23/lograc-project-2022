@@ -187,7 +187,7 @@ data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
 
      U-elim : {Δ : Hypotheses}
           → {φ ψ ρ : Formula}
-          → {n k : ℕ}
+          → {n k : ℕ} 
           → ({m : ℕ} → (n ≤ m) → Δ ++ (time-range φ n m) ++ [ ψ at m ] ⊢ ρ AT k)
           → Δ ⊢ φ U ψ AT n
           ----------------
