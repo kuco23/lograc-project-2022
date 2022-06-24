@@ -1,6 +1,6 @@
 # Formalization of Temporal Logic in Agda
 
-Temporal logic is an extension of propositional logic, which aims to model a formula's time dependence. A statements is thus represented as a pair (A, t). Here, time was expressed via natural numbers, though further generalizations can be implemented (as it is done in the reference material [Labeled Natural Deduction for Temporal Logics](https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf)).
+Temporal logic is an extension of propositional logic, which aims to model a formula's time dependence. A statement is thus represented as a pair (A, t). Here, time was expressed via natural numbers, though further generalizations can be implemented (as it is done in the reference material [Labeled Natural Deduction for Temporal Logics](https://www.math.tecnico.ulisboa.pt/~mvolpe/publications/theses/volpe-phd-thesis.pdf)).
 
 ## Temporal logic Overview
 Temporal logic extends propositional logic by adding three logical connectives (X, G and U) to the usual ones (∧, ∨, ⇒, ⇔, ¬). Their interpretations are:
@@ -29,7 +29,7 @@ X-elim:
 
 G-intro:
 m → n ≤ m → Δ ⊢ φ at m
------------------------------
+----------------------
 Δ ⊢ G φ at n
 
 G-elim:
