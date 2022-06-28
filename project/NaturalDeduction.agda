@@ -4,6 +4,7 @@ open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s ; _<_)
 open import Data.List using (List ; [] ; _∷_ ; [_] ; _++_)
 open import Data.Sum using (_⊎_)
 open import Data.Nat.Properties using (_≤?_)
+open import Relation.Binary.PropositionalEquality using (refl)
 open import Relation.Nullary renaming (¬_ to neg_)
 
 open import Logic AtomicFormula

@@ -3,11 +3,12 @@ open import HProp
 
 module Proofs (AtomicFormula : Set) where
 
-open import Data.Nat.Properties using (_≤?_)
 open import Data.List using ([] ; [_] ; _∷_ ; _++_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
-open import Data.Empty renaming (⊥-elim to neg-elim)
-open import Relation.Nullary renaming (¬_ to neg_)
+
+open import Data.Nat.Properties using (_≤?_)
+open import Relation.Nullary using (yes ; no)
+open import AdvancedNumberTheory
 
 import Logic
 import NaturalDeduction
@@ -15,23 +16,6 @@ import NaturalDeduction
 open module L = Logic AtomicFormula
 open module ND = NaturalDeduction AtomicFormula
 
-n≤n : (n : ℕ) → n ≤ n 
-n≤n zero = z≤n
-n≤n (suc n) = s≤s (n≤n n)
-
-sn≤m⇒n≤m : {n m : ℕ} → suc n ≤ m → n ≤ m 
-sn≤m⇒n≤m {zero} p = z≤n
-sn≤m⇒n≤m {suc n} (s≤s p) = s≤s (sn≤m⇒n≤m p)
-
-n≤sm∧¬n≤m⇒n≡sm : (n m : ℕ) → (n ≤ suc m) → (neg n ≤ m) → n ≡ (suc m)
-n≤sm∧¬n≤m⇒n≡sm zero zero z≤n q = neg-elim (q z≤n)
-n≤sm∧¬n≤m⇒n≡sm (suc n) zero (s≤s p) q = cong suc (aux p) where
-  aux : (n ≤ zero) → n ≡ zero
-  aux z≤n = refl
-n≤sm∧¬n≤m⇒n≡sm zero (suc m) z≤n q = neg-elim (q z≤n)
-n≤sm∧¬n≤m⇒n≡sm (suc n) (suc m) (s≤s p) q = cong suc (n≤sm∧¬n≤m⇒n≡sm n m p (aux q)) where
-  aux : (neg suc n ≤ suc m) → neg n ≤ m
-  aux x r = x (s≤s r)
 
 Ax2 : (φ ψ : Formula) → (n : ℕ) → [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) AT n
 Ax2 φ ψ n = ⇒-intro (⇒-intro (
@@ -69,6 +53,17 @@ Ax6 φ n = ⇒-intro (⇒-intro (G-intro λ m n≤m → aux φ n m n≤m)) where
   aux φ zero zero p = hyp φ zero {{∈-there {{∈-here}}}}
   aux φ n (suc m) p with (n ≤? m)
   ... | yes q = X-elim (⇒-elim {φ = φ} (G-elim q (hyp (G (φ ⇒ X φ)) n {{∈-here}})) (aux φ n m q))
-  ... | no q = aux₁ (n≤sm∧¬n≤m⇒n≡sm n m p q) (hyp φ n {{∈-there {{∈-here}}}}) where
+  ... | no q = aux₁ (n≤sm∧¬n≤m⇒n≡sm p q) (hyp φ n {{∈-there {{∈-here}}}}) where
     aux₁ : n ≡ suc m → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT n → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT suc m
     aux₁ refl d = d
+
+{-# TERMINATING #-}
+n<m⇒φₙ∈[φ∶n∶m] : {m n : ℕ} {φ : Formula} → suc n ≤ m → (φ at n) ∈ (time-range φ n m)
+n<m⇒φₙ∈[φ∶n∶m] {suc zero} {n} (s≤s p) with n ≤? zero 
+... | yes z≤n = ∈-here
+... | no q = m≤n∧¬m≤n⇒⋆ p q
+n<m⇒φₙ∈[φ∶n∶m] {suc (suc m)} {n} (s≤s p) with n ≤? suc m | (suc n) ≤? (suc m)
+... | no q₁ | _ = m≤n∧¬m≤n⇒⋆ p q₁
+... | yes _ | yes p₁ = ∈-there {{n<m⇒φₙ∈[φ∶n∶m] {suc m} {n} p₁}} -- agda doesn't understand recursion terminates
+... | yes _ | no q₁ with n≤sm∧¬n≤m⇒n≡sm p (¬sn≤sm⇒¬n≤m q₁)
+...                 | refl = ∈-here
