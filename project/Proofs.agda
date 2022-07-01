@@ -68,8 +68,24 @@ n<m⇒φₙ∈[φ∶n∶m] {suc (suc m)} {n} (s≤s p) with n ≤? suc m | (suc 
 ... | yes _ | no q₁ with n≤sm∧¬n≤m⇒n≡sm p (¬sn≤sm⇒¬n≤m q₁)
 ...                 | refl = ∈-here
 
+Lemma1 : (φ : Formula) (n m : ℕ) → suc n ≤ m →
+       time-range φ n m ⊢ φ AT n
+Lemma1 φ n m (s≤s z≤n) = hyp φ zero {{n<m⇒φₙ∈[φ∶n∶m] (s≤s z≤n)}}
+Lemma1 φ n m (s≤s (s≤s x)) = hyp φ n {{n<m⇒φₙ∈[φ∶n∶m] (s≤s (s≤s x))}}
+
 Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ (φ ∧ X (φ U ψ)) AT n
-Ax7 φ ψ n = {!!}
+Ax7 φ ψ n = ∧-intro
+  (⇒-intro (U-elim
+    (λ { (z≤n {zero}) → ∨-intro₁ (hyp ψ zero {{∈-there}}) ;
+         (z≤n {suc m}) → ∨-intro₂ (∧-intro (weaken (φ U ψ) (weaken φ (weaken ψ (Lemma1 φ zero (suc m) (s≤s z≤n)))))
+              (X-intro (U-intro (s≤s z≤n) (hyp ψ (suc m) {{{!!}}}) (λ k p q → weaken (φ U ψ) (weaken φ (weaken ψ (hyp φ k))))))) ; -- Zakaj ne prepozna da ψ at suc m ∈ Δ ++ [ ψ at suc m ]?
+         (s≤s x) → ∨-intro₂ (∧-intro {!!} {!!})} ) 
+    (hyp (φ U ψ) n)))
+  {!!}
 
 Ax8 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇒ F ψ AT n
-Ax8 φ ψ n = {!!}
+Ax8 φ ψ n = ⇒-intro (⇒-intro {!!})
+
+--Niti ni koristna funkcija trenutno ampak morda bo
+Mogoc : (φ : Formula) (n : ℕ) → φ at n ∷ [ (¬ φ) at n ] ⊢ ⊥ AT n
+Mogoc φ n = ⇒-elim (hyp (¬ φ) n) (hyp φ n)
