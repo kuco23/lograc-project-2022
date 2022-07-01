@@ -92,15 +92,16 @@ Ax7' φ ψ n = ∧-intro
     ...     | refl = ∨-intro₁ (hyp ψ n {{a∈l₂⇒a∈l₁++l₂ {l₁ = [ φ U ψ at n ] ++ time-range φ n m} ∈-here}})
 
     lemma₂ : (n : ℕ) → [ (ψ ∨ φ ∧ X φ U ψ) at n ] ⊢ ψ AT n
-    lemma₂ zero = U-elim {φ = φ} {ψ = ψ} {n = n} {!   !} {!   !}
-    lemma₂ (suc n) = U-elim {φ = φ} {ψ = ψ} {n = suc n} {!   !} {!   !}
+    lemma₂ zero = U-elim {φ = φ} {ψ = ψ} {n = {!   !}} {!   !} {!   !}
+    lemma₂ (suc n) = U-elim {φ = φ} {ψ = ψ} {n = {!   !}} {!   !} {!   !}
 
 Lemma1 : (φ : Formula) (n m : ℕ) → suc n ≤ m →
        time-range φ n m ⊢ φ AT n
 Lemma1 φ n m (s≤s z≤n) = hyp φ zero {{n<m⇒φₙ∈[φ∶n∶m] (s≤s z≤n)}}
 Lemma1 φ n m (s≤s (s≤s x)) = hyp φ n {{n<m⇒φₙ∈[φ∶n∶m] (s≤s (s≤s x))}}
 
-Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ (φ ∧ X (φ U ψ)) AT n
+
+{- Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ (φ ∧ X (φ U ψ)) AT n
 Ax7 φ ψ n = ∧-intro
   (⇒-intro (U-elim
     (λ { zero (z≤n {zero}) → ∨-intro₁ (hyp ψ zero {{∈-there}}) ;
@@ -116,3 +117,4 @@ Ax8 φ ψ n = ⇒-intro (⇒-intro {!!})
 --Niti ni koristna funkcija trenutno ampak morda bo
 Mogoc : (φ : Formula) (n : ℕ) → φ at n ∷ [ (¬ φ) at n ] ⊢ ⊥ AT n
 Mogoc φ n = ⇒-elim (hyp (¬ φ) n) (hyp φ n)
+-}
