@@ -7,6 +7,8 @@ open import Data.Nat.Properties using (_≤?_)
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Relation.Nullary renaming (¬_ to neg_)
 
+open import AdvancedListTheory using (_∈_)
+
 open import Logic AtomicFormula
 
 record TimeFormula : Set where
@@ -19,12 +21,6 @@ open TimeFormula public
 infixr 19 _at_
 
 Hypotheses = List TimeFormula
-
-infix 3 _∈_
-data _∈_ {A : Set} : A → List A → Set where
-  instance
-    ∈-here  : {x : A} → {xs : List A} → x ∈ (x ∷ xs)
-    ∈-there : {x y : A} {xs : List A} → {{x ∈ xs}} → x ∈ (y ∷ xs)
 
 -- [φ at n-1, φ at n-2, ..., φ at m]
 time-range : (φ : Formula) (m n : ℕ) → Hypotheses 
@@ -188,7 +184,7 @@ data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
      U-elim : {Δ : Hypotheses}
           → {φ ψ ρ : Formula}
           → {n k : ℕ} 
-          → ({m : ℕ} → (n ≤ m) → Δ ++ (time-range φ n m) ++ [ ψ at m ] ⊢ ρ AT k)
+          → ((m : ℕ) → (n ≤ m) → Δ ++ (time-range φ n m) ++ [ ψ at m ] ⊢ ρ AT k)
           → Δ ⊢ φ U ψ AT n
           ----------------
           → Δ ⊢ ρ AT k

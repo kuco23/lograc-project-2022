@@ -1,21 +1,33 @@
-open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; z≤n ; s≤s)
+open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; _<_ ; z≤n ; s≤s)
 open import HProp
 
 module Proofs (AtomicFormula : Set) where
 
-open import Data.List using ([] ; [_] ; _∷_ ; _++_)
+open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
+open import Data.List.Properties using (++-assoc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
 open import Data.Nat.Properties using (_≤?_)
 open import Relation.Nullary using (yes ; no)
+
 open import AdvancedNumberTheory
+open import AdvancedListTheory
 
-import Logic
-import NaturalDeduction
+open import Logic AtomicFormula
+open import NaturalDeduction AtomicFormula
 
-open module L = Logic AtomicFormula
-open module ND = NaturalDeduction AtomicFormula
 
+n≤k<m⇒φₖ∈[φ:n:m] : {m n k : ℕ} {φ : Formula} → n ≤ k → (suc k) ≤ m → (φ at k) ∈ (time-range φ n m)
+n≤k<m⇒φₖ∈[φ:n:m] {zero} {n} {k} p ()
+n≤k<m⇒φₖ∈[φ:n:m] {suc m} {n} {k} p (s≤s q) with n ≤? m
+... | no q₁ = m≤n∧¬m≤n⇒⋆ (k≤m∧m≤n⇒k≤n p q) q₁
+... | yes p₁ with (suc m) ≤? (suc k) 
+...     | no q₂ = ∈-there {{n≤k<m⇒φₖ∈[φ:n:m] p (sm≤sn⇒m≤n (¬m≤n⇒m>n q₂))}}
+...     | yes (s≤s p₂) with m≤n∧n≤m⇒m≡n q p₂ 
+...         | refl = ∈-here
+
+n<m⇒φₙ∈[φ∶n∶m] : {m n : ℕ} {φ : Formula} → suc n ≤ m → (φ at n) ∈ (time-range φ n m)
+n<m⇒φₙ∈[φ∶n∶m] p = n≤k<m⇒φₖ∈[φ:n:m] n≤n p
 
 Ax2 : (φ ψ : Formula) → (n : ℕ) → [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) AT n
 Ax2 φ ψ n = ⇒-intro (⇒-intro (
@@ -43,7 +55,7 @@ Ax4 φ ψ n = ⇒-intro (⇒-intro (X-intro (⇒-elim {φ = φ}
 
 Ax5 : (φ : Formula) (n : ℕ) → [] ⊢ G φ ⇒ φ ∧ X G φ AT n
 Ax5 φ n = ⇒-intro (∧-intro 
-    (G-elim {n = n} {m = n} (n≤n n) (hyp (G φ) n {{∈-here}})) 
+    (G-elim {n = n} {m = n} n≤n (hyp (G φ) n {{∈-here}})) 
     (X-intro (G-intro λ m sn≤m → G-elim {n = n} {m = m} (sn≤m⇒n≤m sn≤m) (hyp (G φ) n {{∈-here}})))
   )
 
@@ -57,13 +69,28 @@ Ax6 φ n = ⇒-intro (⇒-intro (G-intro λ m n≤m → aux φ n m n≤m)) where
     aux₁ : n ≡ suc m → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT n → G (φ ⇒ X φ) at n ∷ [ φ at n ] ⊢ φ AT suc m
     aux₁ refl d = d
 
-{-# TERMINATING #-}
-n<m⇒φₙ∈[φ∶n∶m] : {m n : ℕ} {φ : Formula} → suc n ≤ m → (φ at n) ∈ (time-range φ n m)
-n<m⇒φₙ∈[φ∶n∶m] {suc zero} {n} (s≤s p) with n ≤? zero 
-... | yes z≤n = ∈-here
-... | no q = m≤n∧¬m≤n⇒⋆ p q
-n<m⇒φₙ∈[φ∶n∶m] {suc (suc m)} {n} (s≤s p) with n ≤? suc m | (suc n) ≤? (suc m)
-... | no q₁ | _ = m≤n∧¬m≤n⇒⋆ p q₁
-... | yes _ | yes p₁ = ∈-there {{n<m⇒φₙ∈[φ∶n∶m] {suc m} {n} p₁}} -- agda doesn't understand recursion terminates
-... | yes _ | no q₁ with n≤sm∧¬n≤m⇒n≡sm p (¬sn≤sm⇒¬n≤m q₁)
-...                 | refl = ∈-here
+Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ φ ∧ X (φ U ψ) AT n
+Ax7 φ ψ n = ∧-intro 
+  (⇒-intro (U-elim lemma₁ (hyp (φ U ψ) n {{∈-here}}))) 
+  (⇒-intro (U-intro n≤n (lemma₂ n) (λ k p q → m<n∧n≤m⇒⋆ q p))) where 
+      
+    lemma₁ : (m : ℕ) → n ≤ m → φ U ψ at n ∷ time-range φ n m ++ [ ψ at m ] ⊢ ψ ∨ φ ∧ X (φ U ψ) AT n
+    lemma₁ m p with (suc n) ≤? m
+    ... | yes p₁ = ∨-intro₂ (∧-intro (hyp φ n {{∈-there {{aux₂}}}}) (X-intro (U-intro p₁ (hyp ψ m {{aux₃}}) aux₄))) 
+      where 
+        aux₁ : (φ at n) ∈ (time-range φ n m) 
+        aux₁ = n<m⇒φₙ∈[φ∶n∶m] {m = m} p₁
+        aux₂ : (φ at n) ∈ (time-range φ n m) ++ [ ψ at m ]
+        aux₂ = a∈l₁⇒a∈l₁++l₂ aux₁
+        aux₃ : (ψ at m) ∈ φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ []
+        aux₃ = a∈l₂⇒a∈l₁++l₂ {l₁ = φ U ψ at n ∷ time-range φ n m} ∈-here
+        aux₄ : (k : ℕ) → suc n ≤ k → k < m → φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ [] ⊢ φ AT k
+        aux₄ k q₁ q₂ = hyp φ k {{∈-there {{a∈l₁⇒a∈l₁++l₂ aux₄₁}}}} where 
+          aux₄₁ : (φ at k) ∈ time-range φ n m 
+          aux₄₁ = n≤k<m⇒φₖ∈[φ:n:m] (sn≤m⇒n≤m q₁) q₂
+    ... | no q₁ with m≤n∧n≤m⇒m≡n p (sm≤sn⇒m≤n (¬m≤n⇒m>n q₁))
+    ...     | refl = ∨-intro₁ (hyp ψ n {{a∈l₂⇒a∈l₁++l₂ {l₁ = [ φ U ψ at n ] ++ time-range φ n m} ∈-here}})
+
+    lemma₂ : (n : ℕ) → [ (ψ ∨ φ ∧ X φ U ψ) at n ] ⊢ ψ AT n
+    lemma₂ zero = U-elim {φ = φ} {ψ = ψ} {n = n} {!   !} {!   !}
+    lemma₂ (suc n) = U-elim {φ = φ} {ψ = ψ} {n = suc n} {!   !} {!   !}

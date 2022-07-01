@@ -7,6 +7,7 @@ open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)
 open import Data.Product using (Σ ; _,_ ; proj₁ ; proj₂)
+open import Data.Sum.Base
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_ ; refl ; cong ; sym)
@@ -15,6 +16,7 @@ open Eq.≡-Reasoning
 open import Data.Nat.Properties using (_≤?_)
 open import Relation.Nullary using (yes ; no)
 open import AdvancedNumberTheory using (n≤n ; m≤n⇒m≤sn)
+open import AdvancedListTheory using (_∈_ ; ∈-here ; ∈-there ; a∈l₁++[a]++l₂)
 
 import Logic
 import Semantics
@@ -24,34 +26,9 @@ open module L = Logic AtomicFormula
 open module S = Semantics AtomicFormula η
 open module ND = NaturalDeduction AtomicFormula
 
-open import Data.Sum.Base
-
 
 ⊥⇒⋆ : {n : ℕ} {φ : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ φ ⟧ n)
 ⊥⇒⋆ ()
-
-l++[]≡l : {A : Set} (l : List A) → l ++ [] ≡ l 
-l++[]≡l [] = refl
-l++[]≡l (x ∷ l) = begin
-    (x ∷ l) ++ []
-  ≡⟨ cong (_++ []) refl ⟩
-    [ x ] ++ l ++ [] 
-  ≡⟨ ++-assoc [ x ] l [] ⟩
-    [ x ] ++ (l ++ []) 
-  ≡⟨ cong ([ x ] ++_) (l++[]≡l l) ⟩
-    [ x ] ++ l
-  ∎
-
-l₁≡l₂∧a∈l₁⇒a∈l₂ : {A : Set} {a : A} {l₁ l₂ : List A} → l₁ ≡ l₂ → a ∈ l₁ → a ∈ l₂
-l₁≡l₂∧a∈l₁⇒a∈l₂ refl q = q
-
-a∈l₁++[a]++l₂ : {A : Set} (a : A) (l₁ l₂ : List A) → a ∈ l₁ ++ [ a ] ++ l₂
-a∈l₁++[a]++l₂ a [] l₂ = ∈-here
-a∈l₁++[a]++l₂ a (x ∷ l₁) l₂ = l₁≡l₂∧a∈l₁⇒a∈l₂ aux₁ aux₂ where
-  aux₁ : x ∷ (l₁ ++ [ a ] ++ l₂) ≡ x ∷ l₁ ++ [ a ] ++ l₂
-  aux₁ = ++-assoc [ x ] l₁ ([ a ] ++ l₂)
-  aux₂ : a ∈ x ∷ (l₁ ++ [ a ] ++ l₂) 
-  aux₂ = ∈-there {{a∈l₁++[a]++l₂ a l₁ l₂}}
 
 ⟦_⟧ʰ : (Δ : Hypotheses) → HProp
 ⟦ [] ⟧ʰ = ⊤ʰ
@@ -165,12 +142,12 @@ Soundness (U-elim {Δ} {φ} {ψ} {ρ} {n} {k} f Δ⊢φUψₙ) p = ∥∥-elim (
       → proof ⟦ time-range φ n m ⟧ʰ
   aux₁ {zero} p f = true
   aux₁ {suc m} {n} {φ} p f with n ≤? m
-  ... | yes n≤m = (f m) (n≤m , n≤n (suc m)) , aux₁ {m} {n} n≤m aux₁₁ where
+  ... | yes n≤m = (f m) (n≤m , n≤n) , aux₁ {m} {n} n≤m aux₁₁ where
       aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
       aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (m≤n⇒m≤sn sx₄≤m))
   ... | no _ = true
   aux₂ : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄)))) 
       → proof (⟦ ρ ⟧ k)
-  aux₂ (m , n≤m , q , g) = Soundness (f n≤m) aux₂₁ where 
+  aux₂ (m , n≤m , q , g) = Soundness (f m n≤m) aux₂₁ where 
     aux₂₁ : proof(⟦ Δ ++ time-range φ n m ++ [ ψ at m ] ⟧ʰ)
     aux₂₁ = join Δ (time-range φ n m ++ [ ψ at m ]) p (join (time-range φ n m) [ ψ at m ] (aux₁ n≤m g) (⟦x⟧→⟦[x]⟧ʰ (ψ at m) q))
