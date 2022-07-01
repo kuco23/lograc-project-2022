@@ -67,3 +67,9 @@ n<m⇒φₙ∈[φ∶n∶m] {suc (suc m)} {n} (s≤s p) with n ≤? suc m | (suc 
 ... | yes _ | yes p₁ = ∈-there {{n<m⇒φₙ∈[φ∶n∶m] {suc m} {n} p₁}} -- agda doesn't understand recursion terminates
 ... | yes _ | no q₁ with n≤sm∧¬n≤m⇒n≡sm p (¬sn≤sm⇒¬n≤m q₁)
 ...                 | refl = ∈-here
+
+Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ (φ ∧ X (φ U ψ)) AT n
+Ax7 φ ψ n = {!!}
+
+Ax8 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇒ F ψ AT n
+Ax8 φ ψ n = {!!}
