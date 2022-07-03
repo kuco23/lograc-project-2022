@@ -93,29 +93,31 @@ Ax7' φ ψ n = ∧-intro
       lemma₂ : (n : ℕ) → [ (ψ ∨ φ ∧ X (φ U ψ)) at n ] ⊢ φ U ψ AT n
       lemma₂ n = ∨-elim {φ₁ = ψ} {φ₂ = φ ∧ X φ U ψ} (hyp _ _ {{∈-here}})
         (U-intro n≤n (hyp ψ n {{∈-there {{∈-here}}}}) (λ k q₁ q₂ → m<n∧n≤m⇒⋆ q₂ q₁))
-        (weaken {Δ₁ = []} (ψ ∨ φ ∧ X (φ U ψ)) (aux₁ n)) where 
-        aux₁ : (n : ℕ) → [ (φ ∧ X φ U ψ) at n ] ⊢ φ U ψ AT n
-        aux₁ n = U-elim {n = suc n} 
-          (λ m q → U-intro (sn≤m⇒n≤m q) 
-            (hyp ψ m {{a∈l₂⇒a∈l₁++l₂ {l₁ = (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m} ∈-here}}) 
-            (aux₁₁ m)) 
-          (X-elim (∧-elim₂ (hyp _ _ {{∈-here}}))) where 
-            aux₁₁ : (m k : ℕ) → n ≤ k → k < m 
-                  → (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m ++ [ ψ at m ] ⊢ φ AT k
-            aux₁₁ m k q₁ q₂ with k ≤? n  
-            ... | no p₂ = hyp φ k {{∈-there {{a∈l₁⇒a∈l₁++l₂ {l₁ = time-range φ (suc n) m} 
-              (n≤k<m⇒φₖ∈[φ:n:m] {m = m} {n = suc n} (¬m≤n⇒m>n p₂)  q₂)}}}}
-            ... | yes p₁ with m≤n∧n≤m⇒m≡n p₁ q₁
-            ...     | refl = ∧-elim₁ (hyp _ _ {{∈-here}})
+        (weaken {Δ₁ = []} (ψ ∨ φ ∧ X (φ U ψ)) (aux n)) 
+        where 
+          aux : (n : ℕ) → [ (φ ∧ X φ U ψ) at n ] ⊢ φ U ψ AT n
+          aux n = U-elim {n = suc n} 
+            (λ m q → U-intro (sn≤m⇒n≤m q) 
+              (hyp ψ m {{a∈l₂⇒a∈l₁++l₂ {l₁ = (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m} ∈-here}}) 
+              (aux' m)) 
+            (X-elim (∧-elim₂ (hyp _ _ {{∈-here}}))) where 
+              aux' : (m k : ℕ) → n ≤ k → k < m → (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m ++ [ ψ at m ] ⊢ φ AT k
+              aux' m k q₁ q₂ with k ≤? n  
+              ... | no p₂ = hyp φ k {{∈-there {{a∈l₁⇒a∈l₁++l₂ {l₁ = time-range φ (suc n) m} 
+                (n≤k<m⇒φₖ∈[φ:n:m] {m = m} {n = suc n} (¬m≤n⇒m>n p₂) q₂)}}}}
+              ... | yes p₁ with m≤n∧n≤m⇒m≡n p₁ q₁
+              ...     | refl = ∧-elim₁ (hyp _ _ {{∈-here}})
 
-        
+Ax8 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇒ F ψ AT n
+Ax8 φ ψ n = ⇒-intro (⇒-intro {!!})
+
+{- 
 Lemma1 : (φ : Formula) (n m : ℕ) → suc n ≤ m →
        time-range φ n m ⊢ φ AT n
 Lemma1 φ n m (s≤s z≤n) = hyp φ zero {{n<m⇒φₙ∈[φ∶n∶m] (s≤s z≤n)}}
 Lemma1 φ n m (s≤s (s≤s x)) = hyp φ n {{n<m⇒φₙ∈[φ∶n∶m] (s≤s (s≤s x))}}
 
-
-{- Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ (φ ∧ X (φ U ψ)) AT n
+Ax7 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇔ ψ ∨ (φ ∧ X (φ U ψ)) AT n
 Ax7 φ ψ n = ∧-intro
   (⇒-intro (U-elim
     (λ { zero (z≤n {zero}) → ∨-intro₁ (hyp ψ zero {{∈-there}}) ;
@@ -124,9 +126,6 @@ Ax7 φ ψ n = ∧-intro
          m (s≤s x) → ∨-intro₂ (∧-intro {!!} {!!})} ) 
     (hyp (φ U ψ) n)))
   {!!}
-
-Ax8 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇒ F ψ AT n
-Ax8 φ ψ n = ⇒-intro (⇒-intro {!!})
 
 --Niti ni koristna funkcija trenutno ampak morda bo
 Mogoc : (φ : Formula) (n : ℕ) → φ at n ∷ [ (¬ φ) at n ] ⊢ ⊥ AT n

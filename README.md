@@ -56,4 +56,7 @@ The system was then used to prove the following five statements / tautologies:
 - G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) at n,
 - X(φ ⇒ ψ) ⇒ (X φ ⇒ X ψ) at n,
 - G φ ⇒ φ ∧ X G φ at n,
-- G (φ ⇒ X φ) ⇒ (φ ⇒ G φ) at n.
+- G (φ ⇒ X φ) ⇒ (φ ⇒ G φ) at n,
+- φ U ψ ⇔ ψ ∨ φ ∧ X (φ U ψ) AT n.
+
+The last two statements are not entirely proven within the deductive system (the fifth features induction inside `agda`).
