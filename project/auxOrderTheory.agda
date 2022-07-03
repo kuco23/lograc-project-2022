@@ -1,10 +1,13 @@
-module AdvancedNumberTheory where
+module auxOrderTheory where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Data.Nat using (ℕ ; zero ; suc ; _≤_ ; _<_ ; z≤n ; s≤s)
 open import Data.Nat.Properties using (_≤?_)
 open import Data.Empty renaming (⊥-elim to neg-elim)
 open import Relation.Nullary renaming (¬_ to neg_)
+
+⊥⇒⋆ : {A : Set} {m n : ℕ} → ⊥ → A 
+⊥⇒⋆ ()
 
 n≤n : {n : ℕ} → n ≤ n 
 n≤n {zero} = z≤n
@@ -43,15 +46,14 @@ m≤n∧n≤m⇒m≡n {zero} p z≤n = refl
 m≤n∧n≤m⇒m≡n {suc m} {zero} () q
 m≤n∧n≤m⇒m≡n {suc m} {suc n} (s≤s p) (s≤s q) = cong suc (m≤n∧n≤m⇒m≡n p q)
 
-postulate ¬m≤n⇒m>n : {m n : ℕ} → neg m ≤ n → suc n ≤ m 
-postulate m>n⇒¬m≤n : {m n : ℕ} → suc n ≤ m → neg m ≤ n
+m<n∧n≤m⇒⊥ : {m n : ℕ} → m < n → n ≤ m → ⊥
+m<n∧n≤m⇒⊥ (s≤s (s≤s (s≤s z≤n))) (s≤s (s≤s ()))
+m<n∧n≤m⇒⊥ (s≤s (s≤s (s≤s (s≤s p)))) (s≤s q) = m<n∧n≤m⇒⊥ q (s≤s (s≤s p))
 
-m≤n∧¬m≤n⇒⋆ : {A : Set} {m n : ℕ} → m ≤ n → neg m ≤ n → A 
-m≤n∧¬m≤n⇒⋆ z≤n q with q z≤n
-... | ()
-m≤n∧¬m≤n⇒⋆ {m = (suc m)} {n = (suc n)} (s≤s p) q = m≤n∧¬m≤n⇒⋆ p (aux q) where 
+m≤n∧¬m≤n⇒⊥ : {m n : ℕ} → m ≤ n → neg m ≤ n → ⊥
+m≤n∧¬m≤n⇒⊥ z≤n q = q z≤n
+m≤n∧¬m≤n⇒⊥ {m = (suc m)} {n = (suc n)} (s≤s p) q = m≤n∧¬m≤n⇒⊥ p (aux q) where 
      aux : (neg suc m ≤ suc n) → neg m ≤ n
      aux x r = x (s≤s r)
-     
-m<n∧n≤m⇒⋆ : {A : Set} {m n : ℕ} → m < n → n ≤ m → A 
-m<n∧n≤m⇒⋆ p q = m≤n∧¬m≤n⇒⋆ q (m>n⇒¬m≤n p)
+
+postulate ¬m≤n⇒m>n : {m n : ℕ} → neg m ≤ n → suc n ≤ m 

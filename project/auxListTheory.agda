@@ -1,4 +1,4 @@
-module AdvancedListTheory where
+module auxListTheory where
 
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)

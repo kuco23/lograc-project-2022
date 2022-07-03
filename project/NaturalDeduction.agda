@@ -7,8 +7,7 @@ open import Data.Nat.Properties using (_≤?_)
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Relation.Nullary renaming (¬_ to neg_)
 
-open import AdvancedListTheory using (_∈_)
-
+open import auxListTheory using (_∈_)
 open import Logic AtomicFormula
 
 record TimeFormula : Set where

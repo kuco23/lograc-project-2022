@@ -52,11 +52,14 @@ m → (n ≤ m) → Δ ++ [ φ at n, ..., φ at m - 1, ψ at m ] ⊢ ρ at k
 Δ ⊢ ρ at k
 ```
 The system was then used to prove the following five statements / tautologies:
-- G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) at n,
-- G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) at n,
-- X(φ ⇒ ψ) ⇒ (X φ ⇒ X ψ) at n,
-- G φ ⇒ φ ∧ X G φ at n,
-- G (φ ⇒ X φ) ⇒ (φ ⇒ G φ) at n,
-- φ U ψ ⇔ ψ ∨ φ ∧ X (φ U ψ) AT n.
+```agda
+Ax2 : [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) at n
+Ax3 : [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) at n
+Ax4 : [] ⊢ X(φ ⇒ ψ) ⇒ (X φ ⇒ X ψ) at n
+Ax5 : [] ⊢ G φ ⇒ φ ∧ X G φ at n
+Ax6 : [] ⊢ G (φ ⇒ X φ) ⇒ (φ ⇒ G φ) at n
+Ax7 : [] ⊢ φ U ψ ⇔ ψ ∨ φ ∧ X (φ U ψ) AT n
+Ax8 : [] ⊢ φ U ψ ⇒ F ψ at n
+```
 
-The last two statements are not entirely proven within the deductive system (the fifth features induction inside `agda`).
+where proof of `Ax6` also uses induction on the natural numbers and `Ax7` postulates `¬ m ≤ n ⇒ n < m`.
