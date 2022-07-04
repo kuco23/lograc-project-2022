@@ -19,7 +19,7 @@ open import NaturalDeduction AtomicFormula
 n≤k<m⇒φₖ∈[φ:n:m] : {m n k : ℕ} {φ : Formula} → n ≤ k → (suc k) ≤ m → (φ at k) ∈ (time-range φ n m)
 n≤k<m⇒φₖ∈[φ:n:m] {zero} {n} {k} p ()
 n≤k<m⇒φₖ∈[φ:n:m] {suc m} {n} {k} p (s≤s q) with n ≤? m
-... | no q₁ = bot-elim (m≤n∧¬m≤n⇒⊥ (≤-trans p q) q₁)
+... | no q₁ = bot-elim (q₁ (≤-trans p q))
 ... | yes p₁ with (suc m) ≤? (suc k) 
 ...     | no q₂ = ∈-there {{n≤k<m⇒φₖ∈[φ:n:m] p (sm≤sn⇒m≤n (≰⇒> q₂))}}
 ...     | yes (s≤s p₂) with ≤-antisym q p₂ 

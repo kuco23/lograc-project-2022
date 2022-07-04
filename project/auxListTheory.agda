@@ -12,18 +12,6 @@ data _∈_ {A : Set} : A → List A → Set where
     ∈-here  : {x : A} → {xs : List A} → x ∈ (x ∷ xs)
     ∈-there : {x y : A} {xs : List A} → {{x ∈ xs}} → x ∈ (y ∷ xs)
 
-l++[]≡l : {A : Set} (l : List A) → l ++ [] ≡ l 
-l++[]≡l [] = refl
-l++[]≡l (x ∷ l) = begin
-    (x ∷ l) ++ []
-  ≡⟨ cong (_++ []) refl ⟩
-    [ x ] ++ l ++ [] 
-  ≡⟨ ++-assoc [ x ] l [] ⟩
-    [ x ] ++ (l ++ []) 
-  ≡⟨ cong ([ x ] ++_) (l++[]≡l l) ⟩
-    [ x ] ++ l
-  ∎
-
 a∈l₁++[a]++l₂ : {A : Set} (a : A) (l₁ l₂ : List A) → a ∈ l₁ ++ [ a ] ++ l₂
 a∈l₁++[a]++l₂ a [] l₂ = ∈-here
 a∈l₁++[a]++l₂ a (x ∷ l₁) l₂ = ∈-there {{a∈l₁++[a]++l₂ a l₁ l₂}}

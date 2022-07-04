@@ -187,3 +187,4 @@ data _⊢_AT_ : (Δ : Hypotheses) → (φ : Formula) → (n : ℕ) → Set where
           → Δ ⊢ φ U ψ AT n
           ----------------
           → Δ ⊢ ρ AT k
+ 
