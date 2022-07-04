@@ -149,7 +149,7 @@ soundness (U-elim {Δ} {φ} {ψ} {ρ} {n} {k} f Δ⊢φUψₙ) p = ∥∥-elim
       → proof ⟦ time-range φ n m ⟧ʰ
   aux₁ {zero} p f = true
   aux₁ {suc m} {n} {φ} p f with n ≤? m
-  ... | yes n≤m = (f m) (n≤m , ≤-reflexive refl) , aux₁ {m} {n} n≤m aux₁₁ where
+  ... | yes n≤m = (f m) (n≤m , ≤-reflexive refl) , aux₁ n≤m aux₁₁ where
       aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
       aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (≤-step sx₄≤m))
   ... | no _ = true
