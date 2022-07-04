@@ -78,13 +78,10 @@ Ax7 φ ψ n = ∧-intro
     
       lemma₁ : (m : ℕ) → n ≤ m → φ U ψ at n ∷ time-range φ n m ++ [ ψ at m ] ⊢ ψ ∨ φ ∧ X (φ U ψ) AT n
       lemma₁ m p with (suc n) ≤? m
-      ... | yes p₁ = ∨-intro₂ (∧-intro 
-          (hyp φ n {{∈-there {{aux₁}}}}) 
-          (X-intro (U-intro p₁ (hyp ψ m {{aux₂}}) aux₃))
-        ) 
+      ... | yes p₁ = ∨-intro₂ (∧-intro (hyp φ n {{aux₁}}) (X-intro (U-intro p₁ (hyp ψ m {{aux₂}}) aux₃))) 
         where 
-          aux₁ : (φ at n) ∈ (time-range φ n m) ++ [ ψ at m ]
-          aux₁ = a∈l₁⇒a∈l₁++l₂ (n≤k<m⇒φₖ∈[φ:n:m] ≤-refl p₁)
+          aux₁ : (φ at n) ∈ φ U ψ at n ∷ time-range φ n m ++ [ ψ at m ]
+          aux₁ = ∈-there {{a∈l₁⇒a∈l₁++l₂ (n≤k<m⇒φₖ∈[φ:n:m] ≤-refl p₁)}}
           aux₂ : (ψ at m) ∈ φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ []
           aux₂ = a∈l₂⇒a∈l₁++l₂ {l₁ = φ U ψ at n ∷ time-range φ n m} ∈-here
           aux₃ : (k : ℕ) → suc n ≤ k → k < m → φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ [] ⊢ φ AT k
@@ -95,19 +92,22 @@ Ax7 φ ψ n = ∧-intro
       lemma₂ : (n : ℕ) → [ (ψ ∨ φ ∧ X (φ U ψ)) at n ] ⊢ φ U ψ AT n
       lemma₂ n = ∨-elim {φ₁ = ψ} {φ₂ = φ ∧ X φ U ψ} (hyp _ _ {{∈-here}})
         (U-intro ≤-refl (hyp ψ n {{∈-there {{∈-here}}}}) (λ k q₁ q₂ → bot-elim (<⇒≱  q₂ q₁)))
-        (weaken {Δ₁ = []} (ψ ∨ φ ∧ X (φ U ψ)) (aux n))
-        where 
-          aux : (n : ℕ) → [ (φ ∧ X φ U ψ) at n ] ⊢ φ U ψ AT n
-          aux n = U-elim {n = suc n} 
+        (weaken {Δ₁ = []} 
+          (ψ ∨ φ ∧ X (φ U ψ)) 
+          (U-elim {n = suc n} 
             (λ m q → U-intro (sn≤m⇒n≤m q)
-              (hyp ψ m {{a∈l₂⇒a∈l₁++l₂ {l₁ = (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m} ∈-here}}) (aux' m)) 
-            (X-elim (∧-elim₂ (hyp _ _ {{∈-here}}))) where 
-              aux' : (m k : ℕ) → n ≤ k → k < m → (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m ++ [ ψ at m ] ⊢ φ AT k
-              aux' m k q₁ q₂ with k ≤? n  
-              ... | no p₂ = hyp φ k {{∈-there {{a∈l₁⇒a∈l₁++l₂ {l₁ = time-range φ (suc n) m}
-                (n≤k<m⇒φₖ∈[φ:n:m] {m = m} {n = suc n} (≰⇒> p₂) q₂)}}}}
-              ... | yes p₁ with ≤-antisym p₁ q₁
-              ...     | refl = ∧-elim₁ (hyp _ _ {{∈-here}})
+              (hyp ψ m {{a∈l₂⇒a∈l₁++l₂ {l₁ = (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m} ∈-here}}) (aux' m)
+            ) 
+            (X-elim (∧-elim₂ (hyp _ _ {{∈-here}})))
+          )
+        )
+        where 
+          aux' : (m k : ℕ) → n ≤ k → k < m → (φ ∧ X φ U ψ) at n ∷ time-range φ (suc n) m ++ [ ψ at m ] ⊢ φ AT k
+          aux' m k q₁ q₂ with k ≤? n  
+          ... | no p₂ = hyp φ k {{∈-there {{a∈l₁⇒a∈l₁++l₂ {l₁ = time-range φ (suc n) m}
+            (n≤k<m⇒φₖ∈[φ:n:m] {m = m} {n = suc n} (≰⇒> p₂) q₂)}}}}
+          ... | yes p₁ with ≤-antisym p₁ q₁
+          ...     | refl = ∧-elim₁ (hyp _ _ {{∈-here}})
 
 Ax8 : (φ ψ : Formula) (n : ℕ) → [] ⊢ φ U ψ ⇒ F ψ AT n
 Ax8 φ ψ n = ⇒-intro (⇒-intro (U-elim 
