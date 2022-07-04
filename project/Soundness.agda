@@ -4,6 +4,7 @@ open import HProp
 module Soundness (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp) where
 
 open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
+open import Data.Nat.Properties using (≤-step ; ≤-reflexive)
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)
 open import Data.Product using (Σ ; _,_ ; proj₁ ; proj₂)
@@ -15,7 +16,6 @@ open Eq.≡-Reasoning
 
 open import Data.Nat.Properties using (_≤?_)
 open import Relation.Nullary using (yes ; no)
-open import auxOrderTheory using (n≤n ; m≤n⇒m≤sn)
 open import auxListTheory using (_∈_ ; ∈-here ; ∈-there ; a∈l₁++[a]++l₂)
 
 import Logic
@@ -155,9 +155,9 @@ Soundness (U-elim {Δ} {φ} {ψ} {ρ} {n} {k} f Δ⊢φUψₙ) p = ∥∥-elim
       → proof ⟦ time-range φ n m ⟧ʰ
   aux₁ {zero} p f = true
   aux₁ {suc m} {n} {φ} p f with n ≤? m
-  ... | yes n≤m = (f m) (n≤m , n≤n) , aux₁ {m} {n} n≤m aux₁₁ where
+  ... | yes n≤m = (f m) (n≤m , ≤-reflexive refl) , aux₁ {m} {n} n≤m aux₁₁ where
       aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
-      aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (m≤n⇒m≤sn sx₄≤m))
+      aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (≤-step sx₄≤m))
   ... | no _ = true
   aux₂ : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) 
         (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄))

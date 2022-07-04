@@ -2,10 +2,8 @@ module auxListTheory where
 
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
-
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_ ; refl ; cong ; sym)
+open Eq using (_≡_ ; refl ; cong)
 open Eq.≡-Reasoning
 
 infix 3 _∈_

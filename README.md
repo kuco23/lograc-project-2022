@@ -62,4 +62,4 @@ Ax7 : [] ⊢ φ U ψ ⇔ ψ ∨ φ ∧ X (φ U ψ) AT n
 Ax8 : [] ⊢ φ U ψ ⇒ F ψ at n
 ```
 
-where proof of `Ax6` also uses induction on the natural numbers and `Ax7` postulates `¬ m ≤ n ⇒ n < m`.
+where proof of `Ax6` also uses induction on the natural numbers.
