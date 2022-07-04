@@ -3,6 +3,7 @@ open import HProp
 
 module Soundness (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp) where
 
+open import Data.Empty renaming (⊥-elim to bot-elim)
 open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
 open import Data.Nat.Properties using (≤-step ; ≤-reflexive)
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
@@ -16,19 +17,12 @@ open Eq.≡-Reasoning
 
 open import Data.Nat.Properties using (_≤?_)
 open import Relation.Nullary using (yes ; no)
-open import auxListTheory using (_∈_ ; ∈-here ; ∈-there ; a∈l₁++[a]++l₂)
+open import AuxListTheory using (_∈_ ; ∈-here ; ∈-there ; a∈l₁++[a]++l₂)
 
-import Logic
-import Semantics
-import NaturalDeduction
+open import Logic AtomicFormula
+open import Semantics AtomicFormula η
+open import NaturalDeduction AtomicFormula
 
-open module L = Logic AtomicFormula
-open module S = Semantics AtomicFormula η
-open module ND = NaturalDeduction AtomicFormula
-
-
-⊥⇒⋆ : {n : ℕ} {φ : Formula} → proof(⟦ ⊥ ⟧ n) → proof(⟦ φ ⟧ n)
-⊥⇒⋆ ()
 
 ⟦_⟧ʰ : (Δ : Hypotheses) → HProp
 ⟦ [] ⟧ʰ = ⊤ʰ
@@ -112,7 +106,7 @@ soundness (exchange {Δ₁} {Δ₂} φ₁ φ₂ {m = m} {n = n} x) p = soundness
 
 soundness (hyp {Δ} φ n {{φₙ∈Δ}}) = extract {n} {φ at n} {Δ} φₙ∈Δ
 
-soundness (⊥-elim {φ = φ} {n = n} x) p = ⊥⇒⋆ {n} {φ} (soundness x p)
+soundness (⊥-elim {φ = φ} {n = n} x) p = bot-elim (soundness x p)
 
 soundness ⊤-intro p = true
 

@@ -6,15 +6,19 @@ module Proofs (AtomicFormula : Set) where
 open import Data.Empty renaming (⊥-elim to bot-elim)
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)
-open import Data.Nat.Properties using (_≤?_ ; ≤-refl ; ≤-trans ; ≤-antisym ; ≰⇒>)
+open import Data.Nat.Properties using (_≤?_ ; ≤-refl ; ≤-trans ; ≤-antisym ; ≰⇒> ; <⇒≱  ; n≤1+n)
 open import Relation.Nullary using (yes ; no)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
-open import auxOrderTheory
-open import auxListTheory
+open import AuxListTheory
 open import Logic AtomicFormula
 open import NaturalDeduction AtomicFormula
 
+sm≤sn⇒m≤n : {m n : ℕ} → suc m ≤ suc n → m ≤ n 
+sm≤sn⇒m≤n (s≤s p) = p
+
+sn≤m⇒n≤m : {n m : ℕ} → suc n ≤ m → n ≤ m 
+sn≤m⇒n≤m {n} p = ≤-trans (n≤1+n n) p
 
 n≤k<m⇒φₖ∈[φ:n:m] : {m n k : ℕ} {φ : Formula} → n ≤ k → (suc k) ≤ m → (φ at k) ∈ (time-range φ n m)
 n≤k<m⇒φₖ∈[φ:n:m] {zero} {n} {k} p ()
@@ -90,7 +94,7 @@ Ax7 φ ψ n = ∧-intro
 
       lemma₂ : (n : ℕ) → [ (ψ ∨ φ ∧ X (φ U ψ)) at n ] ⊢ φ U ψ AT n
       lemma₂ n = ∨-elim {φ₁ = ψ} {φ₂ = φ ∧ X φ U ψ} (hyp _ _ {{∈-here}})
-        (U-intro ≤-refl (hyp ψ n {{∈-there {{∈-here}}}}) (λ k q₁ q₂ → bot-elim (m<n∧n≤m⇒⊥ q₂ q₁)))
+        (U-intro ≤-refl (hyp ψ n {{∈-there {{∈-here}}}}) (λ k q₁ q₂ → bot-elim (<⇒≱  q₂ q₁)))
         (weaken {Δ₁ = []} (ψ ∨ φ ∧ X (φ U ψ)) (aux n))
         where 
           aux : (n : ℕ) → [ (φ ∧ X φ U ψ) at n ] ⊢ φ U ψ AT n

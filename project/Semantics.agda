@@ -16,8 +16,7 @@ module Semantics (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp) wh
   ⟦ P ⇒ Q ⟧ n = ⟦ P ⟧ n ⇒ʰ ⟦ Q ⟧ n
   ⟦ X P ⟧ n = ⟦ P ⟧ (suc n)
   ⟦ G P ⟧ n = ∀ʰ ℕ ((λ m → (n ≤ʰ m) ⇒ʰ ⟦ P ⟧ m))
-  ⟦ P U Q ⟧ n = ∃ʰ ℕ  (λ m → (
-      (n ≤ʰ m) ∧ʰ (⟦ Q ⟧ m ∧ʰ (∀ʰ ℕ (λ k → (
-        ((n ≤ʰ k) ∧ʰ (k <ʰ m)) ⇒ʰ ⟦ P ⟧ k
-      ))))
-    )) 
+  ⟦ P U Q ⟧ n = ∃ʰ ℕ 
+    (λ m → ((n ≤ʰ m) ∧ʰ (⟦ Q ⟧ m ∧ʰ (
+      ∀ʰ ℕ (λ k → (((n ≤ʰ k) ∧ʰ (k <ʰ m)) ⇒ʰ ⟦ P ⟧ k))
+    )))) 

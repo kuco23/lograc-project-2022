@@ -1,4 +1,4 @@
-module auxListTheory where
+module AuxListTheory where
 
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 
