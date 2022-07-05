@@ -25,7 +25,7 @@ Hypotheses = List TimeFormula
 time-range : (φ : Formula) (n m : ℕ) → Hypotheses 
 time-range φ n zero = []
 time-range φ n (suc m) with n ≤? m
-... | yes _ =  (φ at m) ∷ (time-range φ n m)
+... | yes _ =  φ at m ∷ time-range φ n m
 ... | no _ = []
 
 infixl 1 _⊢_AT_

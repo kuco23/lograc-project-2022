@@ -14,8 +14,8 @@ a∈l₁++[a]++l₂ a (x ∷ l₁) l₂ = ∈-there {{a∈l₁++[a]++l₂ a l₁
 
 a∈l₁⇒a∈l₁++l₂ : {A : Set} {a : A} {l₁ l₂ : List A} → a ∈ l₁ → a ∈ l₁ ++ l₂ 
 a∈l₁⇒a∈l₁++l₂ ∈-here = ∈-here
-a∈l₁⇒a∈l₁++l₂ {a = a} {l₁ = x ∷ l₁} {l₂ = l₂} (∈-there {{p}}) = ∈-there {{a∈l₁⇒a∈l₁++l₂ {l₁ = l₁} {l₂ = l₂} p}}
+a∈l₁⇒a∈l₁++l₂ {l₁ = x ∷ l₁} (∈-there {{p}}) = ∈-there {{a∈l₁⇒a∈l₁++l₂ p}}
 
 a∈l₂⇒a∈l₁++l₂ : {A : Set} {a : A} {l₁ l₂ : List A} → a ∈ l₂ → a ∈ l₁ ++ l₂ 
 a∈l₂⇒a∈l₁++l₂ {l₁ = []} p = p
-a∈l₂⇒a∈l₁++l₂ {l₁ = x ∷ l₁} {l₂ = l₂} p = ∈-there {{a∈l₂⇒a∈l₁++l₂ {l₁ = l₁} {l₂ = l₂} p}}
+a∈l₂⇒a∈l₁++l₂ {l₁ = x ∷ l₁} p = ∈-there {{a∈l₂⇒a∈l₁++l₂ p}}
