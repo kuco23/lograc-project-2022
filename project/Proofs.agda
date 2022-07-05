@@ -25,9 +25,9 @@ n≤k<m⇒φₖ∈[φ:n:m] {zero} p ()
 n≤k<m⇒φₖ∈[φ:n:m] {suc m} {n} {k} p (s≤s q) with n ≤? m
 ... | no q₁ = bot-elim (q₁ (≤-trans p q))
 ... | yes p₁ with (suc m) ≤? (suc k) 
-...     | no q₂ = ∈-there {{n≤k<m⇒φₖ∈[φ:n:m] p (sm≤sn⇒m≤n (≰⇒> q₂))}}
+...     | no q₂ = a∈l₁⇒a∈l₁++l₂ (n≤k<m⇒φₖ∈[φ:n:m] p (sm≤sn⇒m≤n (≰⇒> q₂)))
 ...     | yes (s≤s p₂) with ≤-antisym q p₂ 
-...         | refl = ∈-here
+...         | refl = a∈l₂⇒a∈l₁++l₂ {l₁ = time-range _ n m} ∈-here
 
 Ax2 : (φ ψ : Formula) (n : ℕ) → [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) AT n
 Ax2 φ ψ n = ⇒-intro (⇒-intro (

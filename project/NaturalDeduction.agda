@@ -21,11 +21,11 @@ infixr 19 _at_
 
 Hypotheses = List TimeFormula
 
--- [φ at m-1, φ at m-2, ..., φ at n]
+-- [φ at n, φ at n+1, ..., φ at m-1]
 time-range : (φ : Formula) (n m : ℕ) → Hypotheses 
 time-range φ n zero = []
 time-range φ n (suc m) with n ≤? m
-... | yes _ =  φ at m ∷ time-range φ n m
+... | yes _ =  time-range φ n m ++ [ φ at m ]
 ... | no _ = []
 
 infixl 1 _⊢_AT_

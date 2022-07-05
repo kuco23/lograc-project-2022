@@ -145,14 +145,17 @@ soundness (U-intro {m = m} n≤m Δ⊢ψₘ Δ⊢φₖ) p = ∣
 soundness (U-elim {Δ} {φ} {ψ} {ρ} {n} {k} f Δ⊢φUψₙ) p = ∥∥-elim 
   (is-prop(⟦ ρ ⟧ k)) aux₂ (soundness Δ⊢φUψₙ p) where 
   aux₁ : {m n : ℕ} {φ : Formula} → n ≤ m 
-      → ((x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄))
+      → ((x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) 
+      → proof(⟦ φ ⟧ x₄))
       → proof ⟦ time-range φ n m ⟧ʰ
   aux₁ {zero} p f = true
   aux₁ {suc m} {n} {φ} p f with n ≤? m
-  ... | yes n≤m = (f m) (n≤m , ≤-reflexive refl) , aux₁ n≤m aux₁₁ where
-      aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
-      aux₁₁ x₄ (n≤x₄ , sx₄≤m) = (f x₄) (n≤x₄ , (≤-step sx₄≤m))
   ... | no _ = true
+  ... | yes n≤m = join (time-range φ n m) ([ φ at m ]) (aux₁ n≤m aux₁₁) aux₁₂ where
+      aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
+      aux₁₁ x₄ (n≤x₄ , sx₄≤m) = f x₄ (n≤x₄ , (≤-step sx₄≤m))
+      aux₁₂ : proof (⟦ [ φ at m ] ⟧ʰ) 
+      aux₁₂ = ⟦x⟧→⟦[x]⟧ʰ (φ at m) (f m (n≤m , ≤-reflexive refl))
   aux₂ : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) 
         (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄))
       )) → proof (⟦ ρ ⟧ k)
