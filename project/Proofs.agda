@@ -20,14 +20,14 @@ sm≤sn⇒m≤n (s≤s p) = p
 sn≤m⇒n≤m : {n m : ℕ} → suc n ≤ m → n ≤ m 
 sn≤m⇒n≤m {n} p = ≤-trans (n≤1+n n) p
 
-n≤k<m⇒φₖ∈[φ:n:m] : {m n k : ℕ} {φ : Formula} → n ≤ k → (suc k) ≤ m → φ at k ∈ time-range φ n m
+n≤k<m⇒φₖ∈[φ:n:m] : {m n k : ℕ} {φ : Formula} → n ≤ k → k < m → φ at k ∈ time-range φ n m
 n≤k<m⇒φₖ∈[φ:n:m] {zero} p ()
-n≤k<m⇒φₖ∈[φ:n:m] {suc m} {n} {k} p (s≤s q) with n ≤? m
+n≤k<m⇒φₖ∈[φ:n:m] {suc m} {n} {k} {φ} p (s≤s q) with n ≤? m
 ... | no q₁ = bot-elim (q₁ (≤-trans p q))
-... | yes p₁ with (suc m) ≤? (suc k) 
+... | yes p₁ with suc m ≤? suc k
 ...     | no q₂ = a∈l₁⇒a∈l₁++l₂ (n≤k<m⇒φₖ∈[φ:n:m] p (sm≤sn⇒m≤n (≰⇒> q₂)))
 ...     | yes (s≤s p₂) with ≤-antisym q p₂ 
-...         | refl = a∈l₂⇒a∈l₁++l₂ {l₁ = time-range _ n m} ∈-here
+...         | refl = a∈l₂⇒a∈l₁++l₂ {l₁ = time-range φ n m} ∈-here
 
 Ax2 : (φ ψ : Formula) (n : ℕ) → [] ⊢ G (φ ⇒ ψ) ⇒ (G φ ⇒ G ψ) AT n
 Ax2 φ ψ n = ⇒-intro (⇒-intro (
@@ -76,9 +76,9 @@ Ax7 φ ψ n = ∧-intro (⇒-intro (U-elim lemma₁ (hyp (φ U ψ) n {{∈-here}
       lemma₁ m p with (suc n) ≤? m
       ... | yes p₁ = ∨-intro₂ (∧-intro (hyp φ n {{aux₁}}) (X-intro (U-intro p₁ (hyp ψ m {{aux₂}}) aux₃))) 
         where 
-          aux₁ : (φ at n) ∈ φ U ψ at n ∷ time-range φ n m ++ [ ψ at m ]
+          aux₁ : φ at n ∈ φ U ψ at n ∷ time-range φ n m ++ [ ψ at m ]
           aux₁ = ∈-there {{a∈l₁⇒a∈l₁++l₂ (n≤k<m⇒φₖ∈[φ:n:m] ≤-refl p₁)}}
-          aux₂ : (ψ at m) ∈ φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ []
+          aux₂ : ψ at m ∈ φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ []
           aux₂ = a∈l₂⇒a∈l₁++l₂ {l₁ = [ φ U ψ at n ] ++ time-range φ n m} ∈-here
           aux₃ : (k : ℕ) → suc n ≤ k → k < m → φ U ψ at n ∷ time-range φ n m ++ ψ at m ∷ [] ⊢ φ AT k
           aux₃ k q₁ q₂ = hyp φ k {{∈-there {{a∈l₁⇒a∈l₁++l₂ (n≤k<m⇒φₖ∈[φ:n:m] (sn≤m⇒n≤m q₁) q₂)}}}}  

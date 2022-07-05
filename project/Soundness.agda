@@ -59,7 +59,9 @@ add (δ at n) Δ δ∈Δ p = aux₂ (aux₁ p) where
   aux₂ : proof(⟦ Δ ⟧ʰ ∧ʰ ⟦ δ ⟧ n) → proof(⟦ Δ ++ [ δ at n ] ⟧ʰ)
   aux₂ (p₁ , p₂) = join Δ [ δ at n ] p₁ (⟦x⟧→⟦[x]⟧ʰ (δ at n) p₂)
 
-shuffle₃ : (Δ₁ Δ₂ Δ₃ : Hypotheses) → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ⟧ʰ) → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ⟧ʰ)
+shuffle₃ : (Δ₁ Δ₂ Δ₃ : Hypotheses) 
+  → proof(⟦ Δ₁ ++ Δ₂ ++ Δ₃ ⟧ʰ) 
+  → proof(⟦ Δ₁ ++ Δ₃ ++ Δ₂ ⟧ʰ)
 shuffle₃ Δ₁ Δ₂ Δ₃ p with split Δ₁ (Δ₂ ++ Δ₃) p 
 ... | p₁ , q₁ with split Δ₂ Δ₃ q₁
 ... | p₂ , p₃ with join Δ₃ Δ₂ p₃ p₂
