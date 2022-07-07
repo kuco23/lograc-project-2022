@@ -5,7 +5,7 @@ module Soundness (AtomicFormula : Set) (η : AtomicFormula → ℕ → HProp) wh
 
 open import Data.Empty renaming (⊥-elim to bot-elim)
 open import Agda.Builtin.Unit renaming (tt to true) hiding (⊤)
-open import Data.Nat.Properties using (≤-step ; ≤-reflexive)
+open import Data.Nat.Properties using (≤-step ; ≤-refl)
 open import Data.List using (List ; [] ; [_] ; _∷_ ; _++_)
 open import Data.List.Properties using (++-assoc)
 open import Data.Product using (Σ ; _,_ ; proj₁ ; proj₂)
@@ -157,7 +157,7 @@ soundness (U-elim {Δ} {φ} {ψ} {ρ} {n} {k} f Δ⊢φUψₙ) p = ∥∥-elim
       aux₁₁ : (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ m) → proof(⟦ φ ⟧ x₄)
       aux₁₁ x₄ (n≤x₄ , sx₄≤m) = f x₄ (n≤x₄ , (≤-step sx₄≤m))
       aux₁₂ : proof (⟦ [ φ at m ] ⟧ʰ) 
-      aux₁₂ = ⟦x⟧→⟦[x]⟧ʰ (φ at m) (f m (n≤m , ≤-reflexive refl))
+      aux₁₂ = ⟦x⟧→⟦[x]⟧ʰ (φ at m) (f m (n≤m , ≤-refl))
   aux₂ : Σ ℕ (λ x₁ → Σ (n ≤ x₁) (λ x₂ → Σ (proof (⟦ ψ ⟧ x₁)) 
         (λ x₃ → (x₄ : ℕ) → Σ (n ≤ x₄) (λ x₅ → suc x₄ ≤ x₁) → proof (⟦ φ ⟧ x₄))
       )) → proof (⟦ ρ ⟧ k)
